@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/SaleSpotter/android/android.iml" filepath="$PROJECT_DIR$/SaleSpotter/android/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SaleSpotter/build/app/app.iml" filepath="$PROJECT_DIR$/SaleSpotter/build/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SaleSpotter/build/flutter_native_splash/flutter_native_splash.iml" filepath="$PROJECT_DIR$/SaleSpotter/build/flutter_native_splash/flutter_native_splash.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/rewarding-sale-app-flutter-app.iml" filepath="$PROJECT_DIR$/.idea/rewarding-sale-app-flutter-app.iml" />
     </modules>
   </component>

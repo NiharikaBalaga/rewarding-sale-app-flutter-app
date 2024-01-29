@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="feature-flutter_native_splash">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/SaleSpotter/build/flutter_native_splash/intermediates/merged_java_res/debug/feature-flutter_native_splash.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
