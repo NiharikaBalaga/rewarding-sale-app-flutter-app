@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/rewarding_sale_app_flutter_app.iml" filepath="$PROJECT_DIR$/rewarding_sale_app_flutter_app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rewarding-sale-app-flutter-app.iml" filepath="$PROJECT_DIR$/.idea/rewarding-sale-app-flutter-app.iml" />
     </modules>
   </component>
 </project>
