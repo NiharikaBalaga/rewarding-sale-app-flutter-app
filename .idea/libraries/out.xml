@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="out">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/SaleSpotter/build/app/intermediates/project_dex_archive/debug/out/345a3cc23ec9a46f8fb3c1eddc9dda5f1801754215fa7b1dbffdad922cabb8bf_3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/SaleSpotter/build/app/intermediates/project_dex_archive/debug/out/345a3cc23ec9a46f8fb3c1eddc9dda5f1801754215fa7b1dbffdad922cabb8bf_1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/SaleSpotter/build/app/intermediates/project_dex_archive/debug/out/345a3cc23ec9a46f8fb3c1eddc9dda5f1801754215fa7b1dbffdad922cabb8bf_0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/SaleSpotter/build/app/intermediates/project_dex_archive/debug/out/345a3cc23ec9a46f8fb3c1eddc9dda5f1801754215fa7b1dbffdad922cabb8bf_2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
