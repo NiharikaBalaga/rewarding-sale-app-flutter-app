@@ -8,9 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       routes: {
-        '/home': (context) => LoginScreen(), // Replace 'HomeScreen' with your main screen.
+        '/home': (context) =>
+            LoginScreen(), // Replace 'HomeScreen' with your main screen.
       },
     );
   }
@@ -83,5 +85,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-
