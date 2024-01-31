@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/sign_up/sign_up_page.dart';
 import '../../../components/_input_fields.dart';
 import '../../../constant.dart';
 import 'package:get/get.dart';
@@ -23,21 +24,26 @@ Stack loginBody(context) {
               const SizedBox(height: 50),
               SizedBox(
                 width: deviceWidth * .87,
-              child:
-              IntlPhoneField(
-                decoration: InputDecoration(
-                  labelText: "Phone Number",
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(),
-                  )
-                )
-              ),
+                child: IntlPhoneField(
+                    decoration: InputDecoration(
+                        labelText: "Phone Number",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ))),
               ),
               const SizedBox(height: 50),
               InkWell(
-                onTap: (){},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return const SignUpPage();
+                      },
+                    ),
+                  );
+                },
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12,horizontal: 25),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 25),
                   decoration: BoxDecoration(
                     color: kPrimaryColor,
                     borderRadius: BorderRadius.circular(10),
@@ -45,10 +51,9 @@ Stack loginBody(context) {
                   child: Text(
                     "Continue",
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white
-                    ),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               )
@@ -59,7 +64,6 @@ Stack loginBody(context) {
     ],
   );
 }
-
 
 CustomInputField imputFieldLogin(field) {
   return CustomInputField(
