@@ -7,9 +7,16 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        title: const Text('Register New User',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(23.0),
+          padding: const EdgeInsets.all(20.0),
           // ConstrainedBox make sures that Column takes at least the screen height
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -21,7 +28,7 @@ class SignUpPage extends StatelessWidget {
             // IntrinsicHeight helps ot make sure that Column doesn't overflow the content
             child: IntrinsicHeight(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Logo
@@ -36,7 +43,7 @@ class SignUpPage extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 10.0),
 
                   // First name text field
                   const TextField(

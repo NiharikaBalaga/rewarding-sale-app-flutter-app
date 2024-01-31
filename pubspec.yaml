@@ -31,7 +31,10 @@ dependencies:
   flutter:
     sdk: flutter
   flare_flutter: ^3.0.0
-  get: ^4.1.4
+  get: ^4.6.1
+  pin_code_fields: ^8.0.1
+  pinput: ^3.0.1
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

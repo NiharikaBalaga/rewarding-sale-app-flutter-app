@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/sign_up/sign_up_page.dart';
-import '../../../components/_input_fields.dart';
-import '../../../constant.dart';
 import 'package:get/get.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/login/otp_verification_page.dart';
+import '../../../constant.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
-Stack loginBody(context) {
+class LoginController extends GetxController {
+  var phoneNumber = "".obs;
+
+  void setPhoneNumber(String value) {
+    phoneNumber.value = value;
+  }
+}
+
+final loginController = LoginController();
+
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: loginBody(context),
+    );
+  }
+}
+
+Stack loginBody(BuildContext context) {
   final deviceWidth = MediaQuery.of(context).size.width;
 
   return Stack(
     children: <Widget>[
       Container(),
       SafeArea(
-          child: GestureDetector(
-        onTap: () => Get.back(),
-      )),
+        child: GestureDetector(
+          onTap: () => Get.back(),
+        ),
+      ),
       Center(
         child: Center(
           child: Column(
@@ -25,22 +45,34 @@ Stack loginBody(context) {
               SizedBox(
                 width: deviceWidth * .87,
                 child: IntlPhoneField(
-                    decoration: InputDecoration(
-                        labelText: "Phone Number",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(),
-                        ))),
+                  decoration: InputDecoration(
+                    labelText: "Phone Number",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (phone) {
+                    loginController.setPhoneNumber(phone.completeNumber);
+                  },
+                ),
               ),
               const SizedBox(height: 50),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return const SignUpPage();
-                      },
-                    ),
-                  );
+                  if (loginController.phoneNumber.value.isNotEmpty) {
+                    Get.to(() => VerificationPage(
+                      phoneNumber: loginController.phoneNumber.value,
+                    ));
+                  } else {
+                    Get.snackbar(
+                      "Error",
+                      "Phone number cannot be empty.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: kError,
+                      colorText: Colors.white,
+                    );
+                  }
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 25),
@@ -62,18 +94,6 @@ Stack loginBody(context) {
         ),
       ),
     ],
-  );
-}
-
-CustomInputField imputFieldLogin(field) {
-  return CustomInputField(
-    null,
-    const Icon(
-      Icons.person,
-      color: Colors.black,
-      size: 30,
-    ),
-    field,
   );
 }
 
