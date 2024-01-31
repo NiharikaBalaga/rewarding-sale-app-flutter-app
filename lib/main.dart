@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/login/login_page.dart';
+import 'package:get/get.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/login/login_page.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
-      routes: {
-        '/home': (context) =>
-            LoginScreen(), // Replace 'HomeScreen' with your main screen.
-      },
+      getPages: [
+        GetPage(name: '/home', page: () => LoginScreen()),
+      ],
     );
   }
 }
