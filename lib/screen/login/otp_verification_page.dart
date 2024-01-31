@@ -21,7 +21,7 @@ class HiddenText extends StatelessWidget {
 
     return Text(
       '$visiblePrefix * * * * * $visibleSuffix',
-      style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+      style: TextStyle(color: Colors.black, fontSize: 18),
     );
   }
 }
@@ -36,7 +36,7 @@ class VerificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final defaultPinTheme = PinTheme(
-      width: 56,
+      width: 46,
       height: 60,
       textStyle: const TextStyle(
         fontSize: 22,
@@ -69,7 +69,7 @@ class VerificationPage extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: const Text(
                   "Enter the code sent to your number",
-                  style: TextStyle(color: Colors.blueGrey, fontSize: 18
+                  style: TextStyle(color: Colors.black, fontSize: 18
                   ),
                 ),
               ),
