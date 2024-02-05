@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/login/login_page.dart';
 import 'package:get/get.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/login/login_page.dart';
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       getPages: [
-        GetPage(name: '/home', page: () => LoginScreen()),
+        //GetPage(name: '/home', page: () => LoginScreen()),
+        GetPage(name: '/home', page: () => HomePage()),
       ],
     );
   }

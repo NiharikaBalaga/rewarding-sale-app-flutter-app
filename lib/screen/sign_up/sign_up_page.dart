@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import '../../constant.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -9,7 +10,8 @@ class SignUpPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        title: const Text('Register New User',
+        title: const Text(
+          'Register New User',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -111,7 +113,14 @@ class SignUpPage extends StatelessWidget {
 
                   // Sign Up button
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                      );
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 25),
