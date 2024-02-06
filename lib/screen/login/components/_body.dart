@@ -45,6 +45,7 @@ Stack loginBody(BuildContext context) {
               SizedBox(
                 width: deviceWidth * .87,
                 child: IntlPhoneField(
+                  initialCountryCode: 'CA',
                   decoration: InputDecoration(
                     labelText: "Phone Number",
                     border: OutlineInputBorder(
