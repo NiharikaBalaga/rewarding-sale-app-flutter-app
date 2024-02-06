@@ -11,3 +11,6 @@ const kPrimaryGradientColor = LinearGradient(
 );
 const kSecondaryColor = Color(0xFF979797);
 const kTextColor = Color(0xFF757575);
+const borderRadius = BorderRadius.all(
+  Radius.circular(10.0),
+);
