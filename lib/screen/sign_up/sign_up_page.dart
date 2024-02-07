@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constant.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/Post_page.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
