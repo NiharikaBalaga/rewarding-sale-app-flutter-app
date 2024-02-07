@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constant.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -13,6 +14,9 @@ class SignUpPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set the color of the back arrow to white
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -111,7 +115,14 @@ class SignUpPage extends StatelessWidget {
 
                   // Sign Up button
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PostPage(),
+                        ),
+                      );
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 25),
