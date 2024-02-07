@@ -6,9 +6,7 @@ Row sectionHeader(title) {
       Text(
         title,
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const Spacer(),
-      const Icon(Icons.arrow_forward)
+      )
     ],
   );
 }

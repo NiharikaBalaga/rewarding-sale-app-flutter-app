@@ -79,11 +79,26 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 12.0),
           child: Row(
             children: [
+              const Icon(
+                CupertinoIcons.location,
+                size: 20,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 8), // Espacio entre el icono y el texto
               const Text(
-                'Harry Potter',
-                style: TextStyle(color: Colors.white, letterSpacing: 1.8),
+                'Kitchener',
+                style: TextStyle(
+                    color: Colors.white, fontSize: 16, letterSpacing: 1.2),
               ),
               const Spacer(),
+              const Padding(
+                padding: EdgeInsets.only(right: 5.0),
+                child: Text(
+                  'Harry Potter',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16, letterSpacing: 1.2),
+                ),
+              ),
               GestureDetector(
                 // Todo: complete onTap
                 //onTap: () => Get.to(const LoginScreen()),

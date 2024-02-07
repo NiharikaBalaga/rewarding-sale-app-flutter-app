@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Location.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_locations_header.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/home/components/_locations_list.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_posts_list.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_search_filter.dart';
 import '../../../constant.dart';
@@ -13,13 +12,6 @@ Column bodyHomePage(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       buildSearchProducts(),
-      const SizedBox(height: kSpace),
-      sectionHeader("Locations"),
-      const SizedBox(height: kSpace),
-      SizedBox(
-        height: 140,
-        child: locationsList(locations),
-      ),
       const SizedBox(height: kSpace),
       sectionHeader('Posts'),
       const SizedBox(height: kSpace),
