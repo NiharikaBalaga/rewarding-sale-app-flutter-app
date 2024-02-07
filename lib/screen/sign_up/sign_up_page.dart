@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import '../../constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 
@@ -10,7 +11,8 @@ class SignUpPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        title: const Text('Register New User',
+        title: const Text(
+          'Register New User',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -119,7 +121,7 @@ class SignUpPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PostPage(),
+                          builder: (context) => HomePage(),
                         ),
                       );
                     },

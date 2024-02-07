@@ -1,0 +1,12 @@
+import 'package:flutter/material.dart';
+
+Row sectionHeader(title) {
+  return Row(
+    children: [
+      Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      )
+    ],
+  );
+}
