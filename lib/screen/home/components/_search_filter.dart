@@ -26,6 +26,7 @@ Row buildSearchProducts() {
           ),
         ),
       ),
+      // Icon Button for filtering
       /*const SizedBox(width: 20),
       Container(
         color: Colors.grey.shade300,
@@ -46,6 +47,7 @@ _showTextField() {
   );
 }
 
+// Icon Button for filtering
 /*IconButton _buildFilterBtn() {
   return IconButton(
     alignment: Alignment.center,

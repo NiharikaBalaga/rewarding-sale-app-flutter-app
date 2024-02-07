@@ -6,7 +6,6 @@ import 'package:rewarding_sale_app_flutter_app/screen/home/components/_locations
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_posts_list.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_search_filter.dart';
 import '../../../constant.dart';
-import '../home.dart';
 
 Column bodyHomePage(
     List<Post> posts, List<Location> locations, BuildContext context) {

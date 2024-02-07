@@ -3,6 +3,7 @@ import 'package:rewarding_sale_app_flutter_app/models/Location.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_body.dart';
 import '../../constant.dart';
+import 'package:flutter/cupertino.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -10,17 +11,17 @@ class HomePage extends StatelessWidget {
 // Temporal Locations list
   final List<Location> locations = [
     Location(
-        name: "Costco",
-        color: Colors.blue,
-        imagePath: "assets/images/asus.png"),
+        name: "Freshco",
+        color: Colors.green,
+        imagePath: "assets/images/freshco.png"),
     Location(
         name: "Walmart",
         color: Colors.blue,
-        imagePath: "assets/images/asus.png"),
+        imagePath: "assets/images/walmart.png"),
     Location(
         name: "Winners",
-        color: Colors.white,
-        imagePath: "assets/images/asus.png"),
+        color: Colors.black,
+        imagePath: "assets/images/winners.png"),
   ];
 
   // Temporal posts list
@@ -74,9 +75,26 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        title: const Text(
-          'Harry Potter',
-          style: TextStyle(color: Colors.white, letterSpacing: 1.8),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: Row(
+            children: [
+              const Text(
+                'Harry Potter',
+                style: TextStyle(color: Colors.white, letterSpacing: 1.8),
+              ),
+              const Spacer(),
+              GestureDetector(
+                // Todo: complete onTap
+                //onTap: () => Get.to(const LoginScreen()),
+                child: const Icon(
+                  CupertinoIcons.profile_circled,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
         centerTitle: false,
         titleSpacing: 24.0,

@@ -3,7 +3,7 @@ import 'package:rewarding_sale_app_flutter_app/screen/home/components/_build_pos
 
 GridView postList(context, product) {
   return GridView.count(
-    crossAxisCount: 2,
+    crossAxisCount: 1,
     children: List.generate(product.length, (index) {
       return GestureDetector(
         // Todo: complete onTap

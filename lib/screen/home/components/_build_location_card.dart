@@ -9,21 +9,21 @@ buildLocationCard(Location location) {
         /*onTap: () {
           Get.to(ProductDetail(product: product));
         },*/
-        child: _productCard(location),
+        child: _locationCard(location),
       ));
 }
 
-Card _productCard(Location location) {
+Card _locationCard(Location location) {
   return Card(
-    elevation: 8,
+    elevation: 5,
     color: location.color,
     child: GridTile(
       child: Column(
         children: [
-          _imageIcon(location),
+          _locationImage(location),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: _title(location),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: _locationName(location),
           ),
         ],
       ),
@@ -31,7 +31,7 @@ Card _productCard(Location location) {
   );
 }
 
-Text _title(Location product) {
+Text _locationName(Location product) {
   return Text(
     product.name,
     style: const TextStyle(
@@ -41,11 +41,11 @@ Text _title(Location product) {
   );
 }
 
-Container _imageIcon(Location location) {
+Container _locationImage(Location location) {
   return Container(
     height: 100,
     width: 120,
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.all(18),
     child: Image.asset(
       location.imagePath,
       fit: BoxFit.cover,

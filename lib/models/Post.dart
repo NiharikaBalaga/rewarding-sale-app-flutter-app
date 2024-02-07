@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Post {
   final String name;
   final String location;
