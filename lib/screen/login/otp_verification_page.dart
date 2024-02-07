@@ -55,6 +55,9 @@ class VerificationPage extends StatelessWidget {
             style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set the color of the back arrow to white
+        ),
       ),
 
       body: SingleChildScrollView(

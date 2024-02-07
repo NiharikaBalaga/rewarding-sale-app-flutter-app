@@ -14,8 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       getPages: [
-        //GetPage(name: '/home', page: () => LoginScreen()),
-        GetPage(name: '/home', page: () => HomePage()),
+        GetPage(name: '/home', page: () => LoginScreen()),
       ],
     );
   }
