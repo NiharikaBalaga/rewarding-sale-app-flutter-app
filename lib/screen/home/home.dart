@@ -4,11 +4,17 @@ import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_body.dart';
 import '../../constant.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart'; // Import the PostPage
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
 
-// Temporal Locations list
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Temporal Locations list
   final List<Location> locations = [
     Location(
         name: "Freshco",
@@ -27,46 +33,46 @@ class HomePage extends StatelessWidget {
   // Temporal posts list
   final List<Post> posts = [
     Post(
-      name: 'Post 1',
-      location: 'Location 1',
-      sale: 5,
+      name: 'Mcdonalds Big Mac',
+      location: 'Ottawa Street, Kitchener',
+      sale: 25,
+      imagePath: 'assets/images/food.png',
+    ),
+    Post(
+      name: 'Lenovo Laptop',
+      location: 'Best Buy, waterloo',
+      sale: 20,
+      imagePath: 'assets/images/computer.png',
+    ),
+    Post(
+      name: 'Whole Chicken',
+      location: 'Walmart, Bridgeport',
+      sale: 20,
       imagePath: 'assets/images/chicken.jpg',
     ),
     Post(
-      name: 'Post 2',
-      location: 'Location 2',
-      sale: 5,
-      imagePath: 'assets/images/chicken.jpg',
+      name: 'Bear fluffy toy',
+      location: 'Boardwalk Walmart',
+      sale: 15,
+      imagePath: 'assets/images/bear.png',
     ),
     Post(
-      name: 'Post 3',
-      location: 'Location 3',
-      sale: 5,
-      imagePath: 'assets/images/chicken.jpg',
+      name: 'Super Home Appliances set',
+      location: 'Costco, Kitchener',
+      sale: 10,
+      imagePath: 'assets/images/homeappliances.png',
     ),
     Post(
-      name: 'Post 4',
-      location: 'Location 4',
+      name: 'Womens Bag',
+      location: 'Old Navy, Waterloo',
       sale: 5,
-      imagePath: 'assets/images/chicken.jpg',
+      imagePath: 'assets/images/bag.png',
     ),
     Post(
-      name: 'Post 5',
-      location: 'Location 5',
+      name: 'Mens - Shoe',
+      location: 'Sport Check, Kitchener',
       sale: 5,
-      imagePath: 'assets/images/chicken.jpg',
-    ),
-    Post(
-      name: 'Post 6',
-      location: 'Location 6',
-      sale: 5,
-      imagePath: 'assets/images/chicken.jpg',
-    ),
-    Post(
-      name: 'Post 7',
-      location: 'Location 7',
-      sale: 5,
-      imagePath: 'assets/images/chicken.jpg',
+      imagePath: 'assets/images/shoe.png',
     ),
   ];
 
@@ -75,6 +81,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set the color of the back arrow to white
+        ),
         title: Padding(
           padding: const EdgeInsets.only(top: 12.0),
           child: Row(
@@ -142,6 +151,21 @@ class HomePage extends StatelessWidget {
             label: 'Rewards',
           ),
         ],
+        onTap: (index) {
+          if (index == 1) {
+            // Navigate to PostPage when "Post" icon is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PostPage()),
+            );
+          }
+          if (index == 0){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          }
+        },
       ),
     );
   }
