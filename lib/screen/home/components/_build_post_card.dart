@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 
 buildPostCard(Post post) {
   return Padding(
     padding: const EdgeInsets.all(2),
     child: Card(
-      elevation: 4,
+      elevation: 3,
       child: Container(
-        height: 140,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+
+          border: Border.all(
+            color: Colors.black12, // Borde transparente
+            width: 2.0, // Ancho del borde
+          ),
+
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.grey[100],
         ),
         child: GridTile(
           header: Padding(
-            padding: const EdgeInsets.all(0),
+            padding: const EdgeInsets.all(8),
             child: _postImage(post),
           ),
           footer: _buildPostTexts(post),
@@ -27,18 +34,19 @@ buildPostCard(Post post) {
 Widget _postImage(Post post) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(
-        15.0), // Ajusta el radio del borde según tus preferencias
+        10.0), // Ajusta el radio del borde según tus preferencias
     child: Container(
+
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.transparent, // Borde transparente
+          color: Colors.black12, // Borde transparente
           width: 2.0, // Ancho del borde
         ),
       ),
       child: Image.asset(
         post.imagePath,
         fit: BoxFit.fill,
-        height: 280,
+        height: 250,
         width: 100,
       ),
     ),
@@ -47,13 +55,13 @@ Widget _postImage(Post post) {
 
 Padding _buildPostTexts(Post post) {
   return Padding(
-    padding: const EdgeInsets.all(15),
+    padding: const EdgeInsets.all(10),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _postTexts(post),
-        const SizedBox(height: 8),
-        // showStarRating(3.0, product.color)
+
+        const SizedBox(height: 15),
       ],
     ),
   );
@@ -69,6 +77,7 @@ Widget _postTexts(Post post) {
             post.name,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
           ),
           const Spacer(),
@@ -76,7 +85,7 @@ Widget _postTexts(Post post) {
             '${post.sale}%',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: kPrimaryColor,
             ),
           ),
         ],
@@ -89,7 +98,8 @@ Widget _postTexts(Post post) {
           Text(
             post.location,
             style: const TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.normal,
+              fontSize: 14,
             ),
           ),
         ],

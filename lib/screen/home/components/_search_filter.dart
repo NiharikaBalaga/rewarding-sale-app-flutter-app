@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+
 Row buildSearchProducts() {
+
   return Row(
+
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       // Search Bar
@@ -11,13 +14,21 @@ Row buildSearchProducts() {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 245, 245, 245),
+              border: Border.all(
+                color: Colors.black12, // Borde transparente
+                width: 2.0, // Ancho del borde
+              ),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(8.0),
             ),
+
             child: Row(
               children: [
+
                 const Padding(
+
                   padding: EdgeInsets.all(8.0),
+
                   child: Icon(Icons.search, color: Colors.grey),
                 ),
                 Expanded(child: _showTextField()),
@@ -40,6 +51,7 @@ Row buildSearchProducts() {
 
 _showTextField() {
   return const TextField(
+
     decoration: InputDecoration(
         hintText: 'Search...',
         border: InputBorder.none,
