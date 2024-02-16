@@ -110,6 +110,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "flutter_secure_storage",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_secure_storage-4.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///C:/Users/porko/Downloads/flutter_windows_3.16.8-stable/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -129,9 +135,9 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.0",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.6",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "2.19"
     },
     {
       "name": "http_parser",
@@ -380,7 +386,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-02-08T18:51:55.472847Z",
+  "generated": "2024-02-15T23:36:17.108391Z",
   "generator": "pub",
   "generatorVersion": "3.2.5"
 }

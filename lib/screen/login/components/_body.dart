@@ -3,7 +3,9 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:get/get.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/login/otp_verification_page.dart';
 import '../../../constant.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
+
+
+import '../../../services/otpservice.dart';
 
 class LoginController extends GetxController {
   var phoneNumber = "".obs;
@@ -15,6 +17,30 @@ class LoginController extends GetxController {
 
 final loginController = LoginController();
 
+Future<bool> _generateOtp(String phoneNumber) async {
+  try {
+
+    print("Received Phone Number : $phoneNumber");
+
+    // Handle OTP generation response
+    return OtpApiService().generateOtp(phoneNumber);
+  } catch (error) {
+
+
+    print("error : $error");
+    return false;
+  }
+}
+
+String formatPhoneNumber(String phoneNumber) {
+
+if (phoneNumber.length >= 12) {
+return "${phoneNumber.substring(2, 5)}-${phoneNumber.substring(5, 8)}-${phoneNumber.substring(8, 12)}";
+} else {
+// Handle cases where the phone number is not long enough
+return phoneNumber;
+}
+}
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -60,11 +86,16 @@ Stack loginBody(BuildContext context) {
               ),
               const SizedBox(height: 50),
               InkWell(
-                onTap: () {
+                onTap: () async {
+
                   if (loginController.phoneNumber.value.isNotEmpty) {
-                    Get.to(() => VerificationPage(
-                      phoneNumber: loginController.phoneNumber.value,
-                    ));
+                    var formattedPhoneNumber = formatPhoneNumber(loginController.phoneNumber.value);
+                    bool otpGenerated = await _generateOtp(formattedPhoneNumber);
+                    if (otpGenerated) {
+                      // Navigate to VerificationPage
+                        Get.to(() => VerificationPage(phoneNumber: loginController.phoneNumber.value));
+                    }
+
                   } else {
                     Get.snackbar(
                       "Error",
