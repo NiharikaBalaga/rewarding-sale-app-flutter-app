@@ -36,13 +36,13 @@ class _HomePageState extends State<HomePage> {
       name: 'Mcdonalds Big Mac',
       location: 'Ottawa Street, Kitchener',
       sale: 25,
-      imagePath: 'assets/images/food.png',
+      imagePath: 'assets/images/chicken.jpg',
     ),
     Post(
       name: 'Lenovo Laptop',
       location: 'Best Buy, waterloo',
       sale: 20,
-      imagePath: 'assets/images/computer.png',
+      imagePath: 'assets/images/chicken.jpg',
     ),
     Post(
       name: 'Whole Chicken',
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
       name: 'Bear fluffy toy',
       location: 'Boardwalk Walmart',
       sale: 15,
-      imagePath: 'assets/images/bear.png',
+      imagePath: 'assets/images/chicken.jpg',
     ),
     Post(
       name: 'Super Home Appliances set',
