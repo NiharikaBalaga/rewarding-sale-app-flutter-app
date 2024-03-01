@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:rewarding_sale_app_flutter_app/models/EarningStar.dart';
 import 'package:rewarding_sale_app_flutter_app/models/RewardDetail.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_body.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_build_earning_star_card.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_reward_details_body.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart'; // Import the PostPage
 
 class RewardPage extends StatefulWidget {
   RewardPage({Key? key}) : super(key: key);
@@ -14,16 +16,15 @@ class RewardPage extends StatefulWidget {
 }
 
 class _RewardPageState extends State<RewardPage> {
-  // Temporal posts list
   final List<RewardDetail> rewardDetails = [
     RewardDetail(
         starsAmount: 25,
         starsDescription:
-            'Early access to exclusive sales - Gain early access to high-demand sales before they are available to the general public'),
+            'Early access to exclusive sales - Gain early entry to top sales before they go public'),
     RewardDetail(
         starsAmount: 50,
         starsDescription:
-            'Featured Post - Have one of your sale posts featured at the top of the app for a day, increasing visibility and engagement'),
+            'Featured Post - Get your sale post featured for enhanced visibility for a day'),
     RewardDetail(
         starsAmount: 75,
         starsDescription:
@@ -41,12 +42,35 @@ class _RewardPageState extends State<RewardPage> {
     RewardDetail(
       starsAmount: 200,
       starsDescription:
-          'Personal Shopping Assistant - Unlock the services of a personal shopping assistant for a day, who can help find the best deals or rare items online or in-store',
+          'Personal Shopping Assistant - Access a personal shopping assistant for top deals and rare finds for a day',
     ),
     RewardDetail(
       starsAmount: 250,
       starsDescription:
-          'Exclusive Merchandise - Redeem stars for exclusive merchandise not available to the general public',
+          'Exclusive Merchandise - Redeem stars for special merchandise not available to the public',
+    ),
+  ];
+
+  final List<EarningStar> earningStars = [
+    EarningStar(
+      description: "Enter to check out one of your posts!",
+      imagePath: 'assets/images/computer.png',
+    ),
+    EarningStar(
+      description: "Like and decide to upvote your post!",
+      imagePath: 'assets/images/computer.png',
+    ),
+    EarningStar(
+      description: "Share one of your posts!",
+      imagePath: 'assets/images/computer.png',
+    ),
+    EarningStar(
+      description: "Reach 10 posts in the app",
+      imagePath: 'assets/images/computer.png',
+    ),
+    EarningStar(
+      description: "Refer friends to the app",
+      imagePath: 'assets/images/computer.png',
     ),
   ];
 
@@ -55,7 +79,7 @@ class _RewardPageState extends State<RewardPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),
         title: Padding(
@@ -67,7 +91,7 @@ class _RewardPageState extends State<RewardPage> {
                 size: 20,
                 color: Colors.white,
               ),
-              const SizedBox(width: 8), // Espacio entre el icono y el texto
+              const SizedBox(width: 8),
               const Text(
                 'Kitchener',
                 style: TextStyle(
@@ -83,8 +107,6 @@ class _RewardPageState extends State<RewardPage> {
                 ),
               ),
               GestureDetector(
-                // Todo: complete onTap
-                //onTap: () => Get.to(const LoginScreen()),
                 child: const Icon(
                   CupertinoIcons.profile_circled,
                   size: 30,
@@ -97,20 +119,54 @@ class _RewardPageState extends State<RewardPage> {
         centerTitle: false,
         titleSpacing: 24.0,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: bodyRewardPage(rewardDetails, context),
+      body: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white, // Background color of tabs
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors
+                        .grey.shade300, // Light gray color for the bottom line
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(0, 2), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: const TabBar(
+                labelColor: Colors.black, // Color of the text
+                indicatorColor:
+                    Color(0xFF1B2A72), // Color of the active tab line
+                tabs: [
+                  Tab(text: 'My Rewards'),
+                  Tab(text: 'Earning Stars'),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: bodyRewardPage(rewardDetails, context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: buildEarningStarsPage(earningStars, context),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: kPrimaryColor, // Set the background color
-        selectedItemColor: Colors.white, // Set the selected item color
-        unselectedItemColor: Colors.grey, // Set the unselected item color
-        selectedLabelStyle: const TextStyle(
-            color: Colors.white), // Set the selected label color
-        unselectedLabelStyle: const TextStyle(
-            color: Colors.grey), // Set the unselected label color
+        backgroundColor: kPrimaryColor,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
