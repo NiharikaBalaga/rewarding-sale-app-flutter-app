@@ -4,17 +4,24 @@ import '../../constant.dart';
 import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
 
-class PostDetailPage extends StatelessWidget {
+class PostDetailPage extends StatefulWidget {
   final Post post;
 
   const PostDetailPage({Key? key, required this.post}) : super(key: key);
+
+  @override
+  _PostDetailPageState createState() => _PostDetailPageState();
+}
+
+class _PostDetailPageState extends State<PostDetailPage> {
+  int upvoteCount = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        title: Text(post.name),
+        title: Text(widget.post.name),
         centerTitle: true,
         foregroundColor: Colors.white,
       ),
@@ -28,11 +35,10 @@ class PostDetailPage extends StatelessWidget {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
               ),
-
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.asset(
-                  post.imagePath,
+                  widget.post.imagePath,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -46,7 +52,7 @@ class PostDetailPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              post.name,
+              widget.post.name,
               style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
             ),
             SizedBox(height: 20),
@@ -56,7 +62,7 @@ class PostDetailPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              post.location,
+              widget.post.location,
               style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
             ),
             SizedBox(height: 20),
@@ -66,7 +72,7 @@ class PostDetailPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              '${post.sale}% off',
+              '${widget.post.sale}% off',
               style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
             ),
             SizedBox(height: 20),
@@ -79,14 +85,13 @@ class PostDetailPage extends StatelessWidget {
               '10',
               style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
             ),
-
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Action for the Report button
+                    _showReportDialog(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red, // Set red color for the Report button
@@ -99,9 +104,14 @@ class PostDetailPage extends StatelessWidget {
                   child: Text('Report',
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                 ),
+
                 ElevatedButton(
                   onPressed: () {
-                    // Action for the Upvote button
+                    setState(() {
+                      upvoteCount++; // Increment upvote count
+                      print('upvote count: $upvoteCount');
+                    });
+                    _showFlyingAnimation(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green, // Set green color for the Upvote button
@@ -111,7 +121,7 @@ class PostDetailPage extends StatelessWidget {
                     ),// Set minimum button size
                   ),
                   child: Text('Upvote',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                 ),
               ],
             ),
@@ -158,6 +168,103 @@ class PostDetailPage extends StatelessWidget {
       ),
     );
   }
+
+  void _showReportDialog(BuildContext context) {
+    String selectedOption = ''; // Variable to store the selected option
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text("Select Reason"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("Out of stock"),
+                    tileColor: selectedOption == 'Out of stock' ? Colors.grey.withOpacity(0.3) : null,
+                    onTap: () {
+                      setState(() {
+                        selectedOption = 'Out of stock'; // Set selected option
+                      });
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Misleading"),
+                    tileColor: selectedOption == 'Misleading' ? Colors.grey.withOpacity(0.3) : null,
+                    onTap: () {
+                      setState(() {
+                        selectedOption = 'Misleading'; // Set selected option
+                      });
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Not Found"),
+                    tileColor: selectedOption == 'Not Found' ? Colors.grey.withOpacity(0.3) : null,
+                    onTap: () {
+                      setState(() {
+                        selectedOption = 'Not Found'; // Set selected option
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                  },
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: selectedOption.isEmpty
+                      ? null
+                      : () {
+                    // Print selected option and handle confirmation
+                    print('Selected option: $selectedOption');
+                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    ); // Redirect to home page
+                  },
+                  child: Text('Confirm'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showFlyingAnimation(BuildContext context) {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+
+    OverlayEntry entry = OverlayEntry(
+      builder: (context) => Positioned(
+        right: position.dx,
+        top: position.dy,
+        child: TweenAnimationBuilder(
+          duration: Duration(milliseconds: 500),
+          tween: Tween(begin: -500.0, end: 0.0),
+          builder: (context, value, child) {
+            return Transform.translate(
+              offset: Offset(-100, -value),
+              child: Icon(Icons.thumb_up, color: Colors.blue, size: 42),
+            );
+          },
+        ),
+      ),
+    );
+
+    Overlay.of(context)?.insert(entry);
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      entry.remove();
+    });
+  }
 }
-
-
