@@ -6,8 +6,6 @@ ListView rewardsDetailsList(context, rewardDetails) {
     itemCount: rewardDetails.length,
     itemBuilder: (context, index) {
       return GestureDetector(
-        // Todo: complete onTap
-        //onTap: () => Get.to(ProductDetail(product: product[index])),
         child: buildRewardDetailCard(rewardDetails[index]),
       );
     },
