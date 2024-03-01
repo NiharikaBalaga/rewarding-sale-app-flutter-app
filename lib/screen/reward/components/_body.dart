@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/models/RewardDetail.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_locations_header.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/home/components/_search_filter.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_progress_bar.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_rewards_details_list.dart';
 
