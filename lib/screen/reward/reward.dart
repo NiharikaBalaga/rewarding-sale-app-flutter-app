@@ -1,79 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:rewarding_sale_app_flutter_app/models/Location.dart';
-import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/home/components/_body.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
+import 'package:rewarding_sale_app_flutter_app/models/RewardDetail.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_body.dart';
 import '../../constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart'; // Import the PostPage
 
-class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+class RewardPage extends StatefulWidget {
+  RewardPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _RewardPageState createState() => _RewardPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  // Temporal Locations list
-  final List<Location> locations = [
-    Location(
-        name: "Freshco",
-        color: Colors.green,
-        imagePath: "assets/images/freshco.png"),
-    Location(
-        name: "Walmart",
-        color: Colors.blue,
-        imagePath: "assets/images/walmart.png"),
-    Location(
-        name: "Winners",
-        color: Colors.black,
-        imagePath: "assets/images/winners.png"),
-  ];
-
+class _RewardPageState extends State<RewardPage> {
   // Temporal posts list
-  final List<Post> posts = [
-    Post(
-      name: 'Mcdonalds Big Mac',
-      location: 'Ottawa Street, Kitchener',
-      sale: 25,
-      imagePath: 'assets/images/food.png',
+  final List<RewardDetail> rewardDetails = [
+    RewardDetail(
+        starsAmount: 25,
+        starsDescription:
+            'Early access to exclusive sales - Gain early access to high-demand sales before they are available to the general public'),
+    RewardDetail(
+        starsAmount: 50,
+        starsDescription:
+            'Featured Post - Have one of your sale posts featured at the top of the app for a day, increasing visibility and engagement'),
+    RewardDetail(
+        starsAmount: 75,
+        starsDescription:
+            'Discount Coupons - Redeem stars for discount coupons at partner retailers'),
+    RewardDetail(
+      starsAmount: 100,
+      starsDescription:
+          'Gift Cards - Earn gift cards for popular stores, allowing you to save on purchases',
     ),
-    Post(
-      name: 'Lenovo Laptop',
-      location: 'Best Buy, waterloo',
-      sale: 20,
-      imagePath: 'assets/images/computer.png',
+    RewardDetail(
+      starsAmount: 150,
+      starsDescription:
+          'VIP Sale Events - Access to VIP sale events where products are available at a steep discount',
     ),
-    Post(
-      name: 'Whole Chicken',
-      location: 'Walmart, Bridgeport',
-      sale: 20,
-      imagePath: 'assets/images/chicken.jpg',
+    RewardDetail(
+      starsAmount: 200,
+      starsDescription:
+          'Personal Shopping Assistant - Unlock the services of a personal shopping assistant for a day, who can help find the best deals or rare items online or in-store',
     ),
-    Post(
-      name: 'Bear fluffy toy',
-      location: 'Boardwalk Walmart',
-      sale: 15,
-      imagePath: 'assets/images/bear.png',
-    ),
-    Post(
-      name: 'Super Home Appliances set',
-      location: 'Costco, Kitchener',
-      sale: 10,
-      imagePath: 'assets/images/homeappliances.png',
-    ),
-    Post(
-      name: 'Womens Bag',
-      location: 'Old Navy, Waterloo',
-      sale: 5,
-      imagePath: 'assets/images/bag.png',
-    ),
-    Post(
-      name: 'Mens - Shoe',
-      location: 'Sport Check, Kitchener',
-      sale: 5,
-      imagePath: 'assets/images/shoe.png',
+    RewardDetail(
+      starsAmount: 250,
+      starsDescription:
+          'Exclusive Merchandise - Redeem stars for exclusive merchandise not available to the general public',
     ),
   ];
 
@@ -127,7 +100,7 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: bodyHomePage(posts, locations, context),
+          child: bodyRewardPage(rewardDetails, context),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
