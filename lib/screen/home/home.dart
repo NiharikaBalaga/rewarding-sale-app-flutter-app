@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
       name: 'Lenovo Laptop',
       location: 'Best Buy, waterloo',
       sale: 20,
-      imagePath: 'assets/images/computer.png',
+      imagePath: 'assets/images/asus.png',
     ),
     Post(
       name: 'Whole Chicken',
