@@ -20,7 +20,7 @@ class _RewardPageState extends State<RewardPage> {
     RewardDetail(
         starsAmount: 25,
         starsDescription:
-            'Early access to exclusive sales - Gain early entry to top sales before they go public'),
+            'Early access to exclusive sales - Gain entry to top sales before they go public'),
     RewardDetail(
         starsAmount: 50,
         starsDescription:
@@ -32,45 +32,45 @@ class _RewardPageState extends State<RewardPage> {
     RewardDetail(
       starsAmount: 100,
       starsDescription:
-          'Gift Cards - Earn gift cards for popular stores, allowing you to save on purchases',
+          'Gift Cards - Earn one for popular stores, allowing you to save on purchases',
     ),
     RewardDetail(
       starsAmount: 150,
       starsDescription:
-          'VIP Sale Events - Access to VIP sale events where products are available at a steep discount',
+          'VIP Sale Events - Access to events where products are available at a steep discount',
     ),
     RewardDetail(
       starsAmount: 200,
       starsDescription:
-          'Personal Shopping Assistant - Access a personal shopping assistant for top deals and rare finds for a day',
+          'Personal Shopping Assistant - Gets an assistant for top deals and rare finds for a day',
     ),
     RewardDetail(
       starsAmount: 250,
       starsDescription:
-          'Exclusive Merchandise - Redeem stars for special merchandise not available to the public',
+          'Exclusive Merchandise - Special merchandise not available to the public',
     ),
   ];
 
   final List<EarningStar> earningStars = [
     EarningStar(
-      description: "Enter to check out one of your posts!",
-      imagePath: 'assets/images/computer.png',
+      description: "A user visits one of your posts!",
+      imagePath: 'assets/images/user_visits_a_post.png',
     ),
     EarningStar(
-      description: "Like and decide to upvote your post!",
-      imagePath: 'assets/images/computer.png',
+      description: "A user likes and decides to upvote your post!",
+      imagePath: 'assets/images/user_likes_a_post.png',
     ),
     EarningStar(
-      description: "Share one of your posts!",
-      imagePath: 'assets/images/computer.png',
+      description: "A user shares one of your posts!",
+      imagePath: 'assets/images/user_shares_a_post.png',
     ),
     EarningStar(
-      description: "Reach 10 posts in the app",
-      imagePath: 'assets/images/computer.png',
+      description: "You've reached 10 posts in the app!",
+      imagePath: 'assets/images/user_reached_ten_posts.png',
     ),
     EarningStar(
-      description: "Refer friends to the app",
-      imagePath: 'assets/images/computer.png',
+      description: "You refer friends to the app",
+      imagePath: 'assets/images/user_refers_friends.png',
     ),
   ];
 

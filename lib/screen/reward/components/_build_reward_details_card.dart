@@ -5,7 +5,7 @@ buildRewardDetailCard(RewardDetail rewardDetail) {
   return Padding(
     padding: const EdgeInsets.all(2),
     child: SizedBox(
-      height: 75, // Custom height for the card
+      height: 78, // Custom height for the card
       child: Card(
         elevation: 3,
         child: Container(
@@ -41,7 +41,8 @@ buildRewardDetailCard(RewardDetail rewardDetail) {
               Expanded(
                 child: Container(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding:
+                      EdgeInsets.only(right: 5, bottom: 10, top: 10, left: 10),
                   child: _rewardDescriptionText(rewardDetail),
                 ),
               ),
@@ -66,10 +67,32 @@ Widget _rewardStarsAmountText(RewardDetail rewardDetail) {
 }
 
 Widget _rewardDescriptionText(RewardDetail rewardDetail) {
-  return Text(
-    rewardDetail.starsDescription,
-    style: const TextStyle(
-      fontSize: 15.5,
+  // Splitting the text based on the first occurrence of " - "
+  var parts = rewardDetail.starsDescription.split(" - ");
+  String firstPart = parts[0];
+  String secondPart =
+      (parts.length > 1) ? " - ${parts.sublist(1).join(" - ")}" : "";
+
+  return RichText(
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: firstPart,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.normal,
+            fontSize: 15,
+            color: Colors.black,
+          ),
+        ),
+        TextSpan(
+          text: secondPart,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.black,
+          ),
+        ),
+      ],
     ),
     softWrap: true,
   );
