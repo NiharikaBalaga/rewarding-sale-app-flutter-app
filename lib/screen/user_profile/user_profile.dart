@@ -112,8 +112,20 @@ class _UserProfileState extends State<UserProfile> {
           title: Text('Post Details', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
         ),
         Column(
+
           children: [
-            SizedBox(height: 20),
+            SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black12,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.grey[100],
+              ),
+            ),
+            Divider(),
             InkWell(
               onTap: () {
                 // Implement action when My Posts is tapped
@@ -121,6 +133,17 @@ class _UserProfileState extends State<UserProfile> {
               child: ListTile(
                 title: Text('My Posts'),
                 trailing: Icon(Icons.arrow_forward_ios),
+              ),
+            ),
+
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black12,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.grey[100],
               ),
             ),
             Divider(),
@@ -133,6 +156,16 @@ class _UserProfileState extends State<UserProfile> {
                 trailing: Icon(Icons.arrow_forward_ios),
               ),
             ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black12,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.grey[100],
+              ),
+            ),
             Divider(),
             InkWell(
               onTap: () {
@@ -141,6 +174,16 @@ class _UserProfileState extends State<UserProfile> {
               child: ListTile(
                 title: Text('About us'),
                 trailing: Icon(Icons.arrow_forward_ios),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black12,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.grey[100],
               ),
             ),
             Divider(),
@@ -153,6 +196,17 @@ class _UserProfileState extends State<UserProfile> {
                 trailing: Icon(Icons.arrow_forward_ios),
               ),
 
+            ),
+
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black12,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.grey[100],
+              ),
             ),
             Divider(),
           ],
