@@ -7,7 +7,8 @@ import '../../constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart'; // Import the PostPage
 
-class HomePage extends StatefulWidget {
+
+import '../user_profile/user_profile.dart';class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
   @override
@@ -110,8 +111,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               GestureDetector(
-                // Todo: complete onTap
-                //onTap: () => Get.to(const LoginScreen()),
+                onTap: () {
+                  // Navigate to UserProfile screen when profile icon is tapped
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserProfileScreen()),
+                  );
+                },
                 child: const Icon(
                   CupertinoIcons.profile_circled,
                   size: 30,
