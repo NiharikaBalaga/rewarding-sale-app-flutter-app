@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -37,7 +38,8 @@ class PostPage extends StatelessWidget {
             },
             child: Text(
               'Post',
-              style: TextStyle(color: Colors.white,
+              style: TextStyle(
+                  color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
@@ -71,6 +73,12 @@ class PostPage extends StatelessWidget {
           ),
         ],
         onTap: (index) {
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RewardPage()),
+            );
+          }
           if (index == 1) {
             // Navigate to PostPage when "Post" icon is tapped
             Navigator.push(
@@ -78,7 +86,7 @@ class PostPage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => PostPage()),
             );
           }
-          if (index == 0){
+          if (index == 0) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomePage()),
@@ -99,7 +107,8 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
   Future<void> _getProductImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedFile != null) {
@@ -108,8 +117,10 @@ class _MyWidgetState extends State<MyWidget> {
       }
     });
   }
+
   Future<void> _getPriceTagImage() async {
-    final pickedFile1 = await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedFile1 =
+        await ImagePicker().pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedFile1 != null) {
@@ -130,30 +141,30 @@ class _MyWidgetState extends State<MyWidget> {
             SizedBox(
               height: 16,
             ),
-        SizedBox(
-          height: 50,
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                  borderRadius: BorderRadius.circular(8.0),
+            SizedBox(
+              height: 50,
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: kPrimaryColor),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  suffixIcon: Icon(
+                    Icons.place_rounded,
+                    color: Colors.blueGrey,
+                    size: 32,
+                  ),
+                  labelText: "Select your location",
+                  labelStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.white12,
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: kPrimaryColor),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                suffixIcon: Icon(
-                  Icons.place_rounded,
-                  color: Colors.blueGrey,
-                  size: 32,
-                ),
-                labelText: "Select your location",
-                labelStyle: TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white12,
               ),
             ),
-        ),
             SizedBox(
               height: 25,
             ),
@@ -164,46 +175,54 @@ class _MyWidgetState extends State<MyWidget> {
                 Expanded(
                   child: Column(
                     children: [
-                      _image != null ? Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black12, // Set your desired border color
-                            width: 1, // Set your desired border width
-                          ),
-                          borderRadius: BorderRadius.circular(3),
-                          // Set your desired border radius
-                        ),
-                        child: Image.file(
-                          _image!,
-                          height: 130,
-                          width: 130,
-                        ),
-                      ) : Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black54, // Set your desired border color
-                            width: 1, // Set your desired border width
-                          ),
-                          borderRadius: BorderRadius.circular(3), // Set your desired border radius
-                        ),
-                        child: Image.asset(
-                          'assets/images/noimageavailable.png', // Replace with the path to your asset image
-                          height: 130,
-                          width: 130,
-                        ),
-                      ),
+                      _image != null
+                          ? Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors
+                                      .black12, // Set your desired border color
+                                  width: 1, // Set your desired border width
+                                ),
+                                borderRadius: BorderRadius.circular(3),
+                                // Set your desired border radius
+                              ),
+                              child: Image.file(
+                                _image!,
+                                height: 130,
+                                width: 130,
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors
+                                      .black54, // Set your desired border color
+                                  width: 1, // Set your desired border width
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    3), // Set your desired border radius
+                              ),
+                              child: Image.asset(
+                                'assets/images/noimageavailable.png', // Replace with the path to your asset image
+                                height: 130,
+                                width: 130,
+                              ),
+                            ),
                       const SizedBox(height: 10),
                       ElevatedButton.icon(
                         onPressed: _getProductImage,
-                        label: const Text('Take Image',
+                        label: const Text(
+                          'Take Image',
                           style: TextStyle(color: Colors.white),
                         ),
-                        icon: const Icon(Icons.add_a_photo, color: Colors.white),
+                        icon:
+                            const Icon(Icons.add_a_photo, color: Colors.white),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryColor,
-                          elevation: 2,// Set your desired background color
+                          elevation: 2, // Set your desired background color
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                            borderRadius: BorderRadius.circular(
+                                10), // Adjust the radius as needed
                           ),
                         ),
                       ),
@@ -215,45 +234,54 @@ class _MyWidgetState extends State<MyWidget> {
                 Expanded(
                   child: Column(
                     children: [
-                      _image1 != null ? Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black54, // Set your desired border color
-                            width: 1, // Set your desired border width
-                          ),
-                          borderRadius: BorderRadius.circular(3), // Set your desired border radius
-                        ),
-                        child: Image.file(
-                          _image1!,
-                          height: 130,
-                          width: 130,
-                        ),
-                      ) : Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black54, // Set your desired border color
-                            width: 1, // Set your desired border width
-                          ),
-                          borderRadius: BorderRadius.circular(3), // Set your desired border radius
-                        ),
-                        child: Image.asset(
-                          'assets/images/noimageavailable.png', // Replace with the path to your asset image
-                          height: 130,
-                          width: 130,
-                        ),
-                      ),
+                      _image1 != null
+                          ? Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors
+                                      .black54, // Set your desired border color
+                                  width: 1, // Set your desired border width
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    3), // Set your desired border radius
+                              ),
+                              child: Image.file(
+                                _image1!,
+                                height: 130,
+                                width: 130,
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors
+                                      .black54, // Set your desired border color
+                                  width: 1, // Set your desired border width
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    3), // Set your desired border radius
+                              ),
+                              child: Image.asset(
+                                'assets/images/noimageavailable.png', // Replace with the path to your asset image
+                                height: 130,
+                                width: 130,
+                              ),
+                            ),
                       const SizedBox(height: 10),
                       ElevatedButton.icon(
                         onPressed: _getPriceTagImage,
-                        label: const Text('Price Tag',
+                        label: const Text(
+                          'Price Tag',
                           style: TextStyle(color: Colors.white),
                         ),
-                        icon: const Icon(Icons.add_a_photo, color: Colors.white),
+                        icon:
+                            const Icon(Icons.add_a_photo, color: Colors.white),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryColor,
-                          elevation: 2,// Set your desired background color
+                          elevation: 2, // Set your desired background color
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                            borderRadius: BorderRadius.circular(
+                                10), // Adjust the radius as needed
                           ),
                         ),
                       ),
@@ -262,194 +290,192 @@ class _MyWidgetState extends State<MyWidget> {
                 ),
               ],
             ),
-
             SizedBox(
               height: 25,
             ),
-        SizedBox(
-          height: 50,
-          child: TextField(
-
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
+            SizedBox(
+              height: 50,
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 0.5),
                     borderRadius: BorderRadius.circular(8.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: kPrimaryColor),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                suffixIcon: Icon(
-                  Icons.local_offer,
-                  color: kPrimaryColor,
-                  size: 30,
-                ),
-                labelText: "Enter Product Name",
-                labelStyle: TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white12,
-              ),
-            ),
-        ),
-            SizedBox(
-              height: 25,
-            ),
-        SizedBox(
-          height: 50,
-          child: TextField(
-              maxLines: 3,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: kPrimaryColor),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                suffixIcon: Icon(
-                  Icons.description_outlined,
-                  color: kPrimaryColor,
-                  size: 30,
-                ),
-                labelText: "Enter Product Description",
-                labelStyle: TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white12,
-              ),
-            ),
-        ),
-            SizedBox(
-              height: 25,
-            ),
-        SizedBox(
-          height: 50,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Old Quantity Field
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: kPrimaryColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      suffixIcon: Icon(
-                        Icons.production_quantity_limits_rounded,
-                        color: kPrimaryColor,
-                      ),
-                      labelText: "Old Quantity",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white12,
-                    ),
-                    keyboardType: TextInputType.number,
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: kPrimaryColor),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  suffixIcon: Icon(
+                    Icons.local_offer,
+                    color: kPrimaryColor,
+                    size: 30,
+                  ),
+                  labelText: "Enter Product Name",
+                  labelStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.white12,
                 ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            SizedBox(
+              height: 50,
+              child: TextField(
+                maxLines: 3,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: kPrimaryColor),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  suffixIcon: Icon(
+                    Icons.description_outlined,
+                    color: kPrimaryColor,
+                    size: 30,
+                  ),
+                  labelText: "Enter Product Description",
+                  labelStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.white12,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Old Quantity Field
+                  Flexible(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        suffixIcon: Icon(
+                          Icons.production_quantity_limits_rounded,
+                          color: kPrimaryColor,
+                        ),
+                        labelText: "Old Quantity",
+                        labelStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.white12,
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
 
-                SizedBox(width: 16),
-                // New Quantity Field
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                        borderRadius: BorderRadius.circular(8.0),
+                  SizedBox(width: 16),
+                  // New Quantity Field
+                  Flexible(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        suffixIcon: Icon(
+                          Icons.production_quantity_limits_outlined,
+                          color: kPrimaryColor,
+                        ),
+                        labelText: "New",
+                        labelStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.white12,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: kPrimaryColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      suffixIcon: Icon(
-                        Icons.production_quantity_limits_outlined,
-                        color: kPrimaryColor,
-                      ),
-                      labelText: "New",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white12,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-        ),
             SizedBox(
               height: 25,
             ),
-        SizedBox(
-          height: 50,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Old Quantity Field
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                        borderRadius: BorderRadius.circular(8.0),
+            SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Old Quantity Field
+                  Flexible(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        suffixIcon: Icon(
+                          Icons.price_change,
+                          color: kPrimaryColor,
+                        ),
+                        labelText: "Old Price",
+                        labelStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.white12,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: kPrimaryColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      suffixIcon: Icon(
-                        Icons.price_change,
-                        color: kPrimaryColor,
-                      ),
-                      labelText: "Old Price",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white12,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
-                SizedBox(width: 16),
-                // New Quantity Field
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                        borderRadius: BorderRadius.circular(8.0),
+                  SizedBox(width: 16),
+                  // New Quantity Field
+                  Flexible(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        suffixIcon: Icon(
+                          Icons.price_change_outlined,
+                          color: kPrimaryColor,
+                        ),
+                        labelText: "New Price",
+                        labelStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.white12,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: kPrimaryColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      suffixIcon: Icon(
-                        Icons.price_change_outlined,
-                        color: kPrimaryColor,
-                      ),
-                      labelText: "New Price",
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white12,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-        ),
             SizedBox(
               height: 24,
             ),
           ],
         ),
-
       ),
-
     );
-
   }
-
 }

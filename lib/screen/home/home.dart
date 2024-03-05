@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Location.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/components/_body.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart'; // Import the PostPage
@@ -152,6 +153,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         onTap: (index) {
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RewardPage()),
+            );
+          }
           if (index == 1) {
             // Navigate to PostPage when "Post" icon is tapped
             Navigator.push(
@@ -159,7 +166,7 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(builder: (context) => PostPage()),
             );
           }
-          if (index == 0){
+          if (index == 0) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomePage()),
