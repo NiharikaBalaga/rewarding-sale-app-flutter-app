@@ -7,6 +7,7 @@ import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_build_e
 import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_reward_details_body.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
+import '../user_profile/user_profile.dart';
 
 class RewardPage extends StatefulWidget {
   RewardPage({Key? key}) : super(key: key);
@@ -107,6 +108,13 @@ class _RewardPageState extends State<RewardPage> {
                 ),
               ),
               GestureDetector(
+                onTap: () {
+                  // Navigate to UserProfile screen when profile icon is tapped
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserProfileScreen()),
+                  );
+                },
                 child: const Icon(
                   CupertinoIcons.profile_circled,
                   size: 30,
