@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../../constant.dart';
+import '../MyPost_UI/my_post_ui.dart';
 import '../login/components/_body.dart';
 
 void main() {
@@ -128,7 +129,10 @@ class _UserProfileState extends State<UserProfile> {
             Divider(),
             InkWell(
               onTap: () {
-                // Implement action when My Posts is tapped
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyPostPage()),
+                );
               },
               child: ListTile(
                 title: Text('My Posts'),
