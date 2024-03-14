@@ -33,24 +33,17 @@ class SignUpApiService {
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
-        final accessToken = responseBody['accessToken'] as String;
-        final refreshToken = responseBody['refreshToken'] as String;
 
-        await _secureStorageService
-            .write(SecureStorageService.keyAccessToken, accessToken);
-        await _secureStorageService
-            .write(SecureStorageService.keyRefreshToken, refreshToken);
-
-        final isSignedUp = responseBody['isSignedUp'] as bool;
+        final isSignedUp = responseBody['signedUp'] as bool;
         print("User Signed up successfully: ${response.reasonPhrase}");
-        return {'success': true, 'isSignedUp': isSignedUp};
+        return {'success': true, 'signedUp': isSignedUp};
       } else {
         print("Failed to Sign Up User: ${response.reasonPhrase}");
         return {'success': false, 'error': response.reasonPhrase};
       }
     } catch (error) {
       print("SignUpApiService Error: $error");
-      return {'success': true, 'error': 'An unexpected error occurred'};
+      return {'success': false, 'error': 'An unexpected error occurred'};
     }
   }
 }
