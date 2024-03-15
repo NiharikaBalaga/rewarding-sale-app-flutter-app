@@ -92,7 +92,7 @@ Widget _postTexts(Post post) {
       ),
       const SizedBox(
           height:
-              8), // Ajusta el espacio vertical entre las filas según tus preferencias
+          8), // Ajusta el espacio vertical entre las filas según tus preferencias
       Row(
         children: [
           Text(

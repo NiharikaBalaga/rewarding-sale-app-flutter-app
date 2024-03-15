@@ -6,5 +6,6 @@ class ApiConfig {
   static const String verifyOtpEndpoint = '/auth/otp/verify';
   static const String currentUserEndpoint = '/auth/user';
   static const String refreshTokenEndpoint = '/auth/token/refresh';
-
+  static const String signupUserEndpoint ='/auth/user/signup';
+  static const String getPostEndpoint = '/auth/user';
 }
