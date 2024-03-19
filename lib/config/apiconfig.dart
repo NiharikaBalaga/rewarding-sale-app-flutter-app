@@ -7,5 +7,6 @@ class ApiConfig {
   static const String currentUserEndpoint = '/auth/user';
   static const String refreshTokenEndpoint = '/auth/token/refresh';
   static const String signupUserEndpoint ='/auth/user/signup';
-  static const String getPostEndpoint = '/auth/user';
+  static const String baseUrlPost = 'http://10.0.2.2:3001/api';
+  static const String getPostEndpoint = '/post/allpost';
 }

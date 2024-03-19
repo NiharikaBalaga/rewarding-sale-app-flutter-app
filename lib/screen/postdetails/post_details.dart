@@ -21,111 +21,145 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        title: Text(widget.post.name),
+        title: Text(
+            widget.post.productName.split(' ').take(2).join(' ')
+        ),
         centerTitle: true,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  widget.post.imagePath,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+      body: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Product Name:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              widget.post.name,
-              style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Location:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              widget.post.location,
-              style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Price:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              '${widget.post.sale}% off',
-              style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Quantity:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              '10',
-              style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _showReportDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Set red color for the Report button
-                    textStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.bold ,fontSize: 18), // Set text color and style
-                    minimumSize: Size(150, 50),
-                    shape: RoundedRectangleBorder( // Set border radius
-                      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                    ),// Set minimum button size
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    widget.post.productImageObjectUrl, // Changed to use the image URL from the fetched post
+                    fit: BoxFit.fill,
+                    height: 250,
+                    width: double.infinity,
                   ),
-                  child: Text('Report',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                 ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Product Name:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.post.productName,
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Store Name:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.post.storeName,
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Location:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.post.storeAddress,
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Text(
+                'New Price:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '${widget.post.newPrice}',
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Old Price:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '${widget.post.oldPrice}',
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Text(
+                'New Quantity:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '${widget.post.newQuantity}',
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Old Quantity:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '${widget.post.oldQuantity}',
+                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _showReportDialog(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Set red color for the Report button
+                      textStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.bold ,fontSize: 18), // Set text color and style
+                      minimumSize: Size(150, 50),
+                      shape: RoundedRectangleBorder( // Set border radius
+                        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                      ),// Set minimum button size
+                    ),
+                    child: Text('Report',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                  ),
 
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      upvoteCount++; // Increment upvote count
-                      print('upvote count: $upvoteCount');
-                    });
-                    _showFlyingAnimation(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Set green color for the Upvote button
-                    minimumSize: Size(150, 50),
-                    shape: RoundedRectangleBorder( // Set border radius
-                      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                    ),// Set minimum button size
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        upvoteCount++; // Increment upvote count
+                        print('upvote count: $upvoteCount');
+                      });
+                      _showFlyingAnimation(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green, // Set green color for the Upvote button
+                      minimumSize: Size(150, 50),
+                      shape: RoundedRectangleBorder( // Set border radius
+                        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                      ),// Set minimum button size
+                    ),
+                    child: Text('Upvote',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                   ),
-                  child: Text('Upvote',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
