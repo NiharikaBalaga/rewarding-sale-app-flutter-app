@@ -3,6 +3,7 @@ import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import '../../constant.dart';
 import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
@@ -15,149 +16,193 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   int upvoteCount = 0;
-
+  int _currentImageIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
         title: Text(
-            widget.post.productName.split(' ').take(2).join(' ')
+          widget.post.productName.split(' ').take(2).join(' '),
+          style: TextStyle(
+            fontSize: 18, // Set the desired font size for the product name
+          ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.share), // Add the share icon
+            onPressed: () {
+              // Implement the share functionality here
+            },
+          ),
+        ],
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
+
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 250,
+                  enableInfiniteScroll: false,
+                  viewportFraction: 1.0,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentImageIndex = index;
+                    });
+                  },
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    widget.post.productImageObjectUrl, // Changed to use the image URL from the fetched post
+                items: [
+                  Image.network(
+                    widget.post.productImageObjectUrl,
                     fit: BoxFit.fill,
-                    height: 250,
                     width: double.infinity,
+                  ),
+                  Image.network(
+                    widget.post.priceTagImageObjectUrl,
+                    fit: BoxFit.fill,
+                    width: double.infinity,
+                  ),
+                  // Add more images if needed
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  2, // Change this number to the total number of images
+                      (index) => Container(
+                    width: 8,
+                    height: 8,
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentImageIndex == index ? kPrimaryColor : Colors.grey,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
-                'Product Name:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: Text(
+                      'Product Name:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      widget.post.productName,
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Category:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      widget.post.postCategory,
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Store Name:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      widget.post.storeName,
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Location:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      widget.post.storeAddress,
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'New Price:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      '${widget.post.newPrice}',
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Old Price:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      '${widget.post.oldPrice}',
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'New Quantity:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      '${widget.post.newQuantity}',
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Old Quantity:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    ),
+                    subtitle: Text(
+                      '${widget.post.oldQuantity}',
+                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 8),
-              Text(
-                widget.post.productName,
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Store Name:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                widget.post.storeName,
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Location:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                widget.post.storeAddress,
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
-              Text(
-                'New Price:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '${widget.post.newPrice}',
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Old Price:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '${widget.post.oldPrice}',
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
-              Text(
-                'New Quantity:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '${widget.post.newQuantity}',
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Old Quantity:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '${widget.post.oldQuantity}',
-                style: TextStyle(fontSize: 16, fontFamily: 'Roboto'), // Apply a modern font style
-              ),
-              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
                       _showReportDialog(context);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Set red color for the Report button
-                      textStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.bold ,fontSize: 18), // Set text color and style
-                      minimumSize: Size(150, 50),
-                      shape: RoundedRectangleBorder( // Set border radius
-                        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                      ),// Set minimum button size
+                    child: Column(
+                      children: [
+                        Icon(Icons.flag, color: Colors.red, size: 36), // Flag icon
+                        Text('Report', style: TextStyle(color: Colors.red)), // Text below the icon
+                      ],
                     ),
-                    child: Text('Report',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                   ),
-
-                  ElevatedButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
                       setState(() {
                         upvoteCount++; // Increment upvote count
                         print('upvote count: $upvoteCount');
                       });
                       _showFlyingAnimation(context);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green, // Set green color for the Upvote button
-                      minimumSize: Size(150, 50),
-                      shape: RoundedRectangleBorder( // Set border radius
-                        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                      ),// Set minimum button size
+                    child: Column(
+                      children: [
+                        Icon(Icons.thumb_up, color: Colors.green, size: 36), // Thumb up icon
+                        Text('Upvote($upvoteCount)', style: TextStyle(color: Colors.green)), // Text below the icon
+                      ],
                     ),
-                    child: Text('Upvote',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                   ),
                 ],
               ),
+
             ],
           ),
         ),

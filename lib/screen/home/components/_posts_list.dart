@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rewarding_sale_app_flutter_app/screen/home/components/_build_post_card.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/postdetails/post_details.dart';
 import '../../../models/Post.dart';
+import '_build_post_card.dart';
+
 
 GridView postList(BuildContext context, List<Post> products) {
   return GridView.count(
@@ -16,7 +17,10 @@ GridView postList(BuildContext context, List<Post> products) {
             MaterialPageRoute(builder: (context) => PostDetailPage(post: post)),
           );
         },
-        child: buildPostCard(post),
+        child: SizedBox(
+          height: 200, // Set the desired height here
+          child: PostCard(post: post), // Use the PostCard widget here
+        ),
       );
     }),
   );
