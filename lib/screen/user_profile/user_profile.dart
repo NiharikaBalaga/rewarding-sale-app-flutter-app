@@ -3,6 +3,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../../constant.dart';
+import '../../models/CurrentUser.dart';
+import '../../services/getcurrentuserservice.dart';
 import '../MyPost_UI/my_post_ui.dart';
 import '../login/components/_body.dart';
 
@@ -14,8 +16,6 @@ void main() {
 }
 
 class UserProfileScreen extends StatelessWidget {
-  // final String phoneNumber;
-  // UserProfileScreen({required this.phoneNumber});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +42,28 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   late File _image;
+  late String userName = ''; // Variable to store user's full name
+  late String email = '';
 
   @override
   void initState() {
     super.initState();
     _image = File('assets/images/default-profile-picture.jpg'); // Initial profile picture
+    fetchCurrentUser(); // Call function to fetch current user
+  }
+
+  Future<void> fetchCurrentUser() async {
+    try {
+      // Call your function to fetch current user here
+      CurrentUser currentUser = await CurrentUserService.getCurrentUser();
+      // Combine first name and last name to form full name
+      setState(() {
+        userName = '${currentUser.firstName} ${currentUser.lastName}';
+        email = '${currentUser.email}';
+      });
+    } catch (error) {
+      print('Error fetching current user: $error');
+    }
   }
 
   Future<void> _getImage() async {
@@ -95,7 +112,7 @@ class _UserProfileState extends State<UserProfile> {
 
         SizedBox(height: 20),
         Text(
-          'John Doe', // Replace this with the user's name
+          userName.isNotEmpty ? userName : 'Loading...', // Display user's full name
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
@@ -105,7 +122,7 @@ class _UserProfileState extends State<UserProfile> {
         ),
         SizedBox(height: 10),
         Text(
-          'john.doe@example.com', // Replace this with the user's email address
+          email.isNotEmpty ? email : 'Loading...',  // Replace this with the user's email address
           style: TextStyle(fontSize: 16),
         ),
         SizedBox(height: 20),

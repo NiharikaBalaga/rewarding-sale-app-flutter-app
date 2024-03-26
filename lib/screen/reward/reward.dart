@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:rewarding_sale_app_flutter_app/models/EarningStar.dart';
 import 'package:rewarding_sale_app_flutter_app/models/RewardDetail.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
@@ -7,6 +8,8 @@ import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_build_e
 import 'package:rewarding_sale_app_flutter_app/screen/reward/components/_reward_details_body.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
+import '../../models/CurrentUser.dart';
+import '../../services/getcurrentuserservice.dart';
 import '../user_profile/user_profile.dart';
 
 class RewardPage extends StatefulWidget {
@@ -75,6 +78,47 @@ class _RewardPageState extends State<RewardPage> {
     ),
   ];
 
+  late String userName = '';
+  late String location = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCurrentUser();
+  }
+
+  Future<void> fetchCurrentUser() async {
+    try {
+      CurrentUser currentUser = await CurrentUserService.getCurrentUser();
+      String lastName = currentUser.lastName;
+      setState(() {
+        userName = '$lastName';
+      });
+      await getUserLocation(
+          currentUser.lastLatitude, currentUser.lastLongitude);
+    } catch (error) {
+      print('Error fetching current user: $error');
+    }
+  }
+
+  Future<void> getUserLocation(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String address = '${place.locality}';
+        setState(() {
+          location = address;
+        });
+      } else {
+        print('No placemarks found for the provided coordinates.');
+      }
+    } catch (error) {
+      print('Error fetching user location: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,17 +137,19 @@ class _RewardPageState extends State<RewardPage> {
                 color: Colors.white,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Kitchener',
-                style: TextStyle(
+              Text(
+                location.isNotEmpty ? location : 'Loading...',
+                style: const TextStyle(
                     color: Colors.white, fontSize: 16, letterSpacing: 1.2),
               ),
               const Spacer(),
-              const Padding(
-                padding: EdgeInsets.only(right: 5.0),
+              Padding(
+                padding: const EdgeInsets.only(right: 5.0),
                 child: Text(
-                  'Harry Potter',
-                  style: TextStyle(
+                  userName.isNotEmpty
+                      ? userName[0].toUpperCase() + userName.substring(1)
+                      : 'Loading...',
+                  style: const TextStyle(
                       color: Colors.white, fontSize: 16, letterSpacing: 1.2),
                 ),
               ),
@@ -112,7 +158,8 @@ class _RewardPageState extends State<RewardPage> {
                   // Navigate to UserProfile screen when profile icon is tapped
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UserProfileScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => UserProfileScreen()),
                   );
                 },
                 child: const Icon(
@@ -132,12 +179,12 @@ class _RewardPageState extends State<RewardPage> {
         child: Column(
           children: <Widget>[
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white, // Background color of tabs
                 boxShadow: [
                   BoxShadow(
-                    color: Colors
-                        .grey.shade300, // Light gray color for the bottom line
+                    color:
+                        Colors.blueGrey, // Light gray color for the bottom line
                     spreadRadius: 1,
                     blurRadius: 3,
                     offset: Offset(0, 2), // changes position of shadow
