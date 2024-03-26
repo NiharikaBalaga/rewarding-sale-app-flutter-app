@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import '../../constant.dart';
+import '../../models/CurrentUser.dart';
 import '../../models/User.dart';
 import '../../services/signupservice.dart';
 
