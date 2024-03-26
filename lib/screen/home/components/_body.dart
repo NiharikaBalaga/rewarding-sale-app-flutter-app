@@ -7,7 +7,7 @@ import 'package:rewarding_sale_app_flutter_app/screen/home/components/_search_fi
 
 
 Column bodyHomePage(
-    List<Post> posts, List<Location> locations, BuildContext context) {
+    List<Post> posts, BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [

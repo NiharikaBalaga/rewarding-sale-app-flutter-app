@@ -140,6 +140,30 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "geocoding",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding-2.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "geocoding_android",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_android-3.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "geocoding_ios",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_ios-2.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "geocoding_platform_interface",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding_platform_interface-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "get",
       "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/get-4.6.6",
       "packageUri": "lib/",
@@ -398,7 +422,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-03-19T18:11:31.865111Z",
+  "generated": "2024-03-20T19:33:18.153320Z",
   "generator": "pub",
   "generatorVersion": "3.2.5"
 }
