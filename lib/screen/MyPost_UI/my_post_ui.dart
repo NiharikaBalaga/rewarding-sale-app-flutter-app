@@ -4,7 +4,10 @@ import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
 import '../reward/reward.dart';
+import 'package:geocoding/geocoding.dart';
 import '../user_profile/user_profile.dart';
+import '../../services/getcurrentuserservice.dart';
+import '../../models/CurrentUser.dart';
 
 class MyPostPage extends StatefulWidget {
   MyPostPage({Key? key}) : super(key: key);
@@ -16,6 +19,48 @@ class MyPostPage extends StatefulWidget {
 class _MyPostPageState extends State<MyPostPage> {
   List<String> activePosts = ['Active Post 1', 'Active Post 2', 'Active Post 3'];
   List<String> inactivePosts = ['Inactive Post 1', 'Inactive Post 2'];
+
+  String userName = '';
+  String location = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCurrentUser();
+  }
+
+  Future<void> fetchCurrentUser() async {
+    try {
+      CurrentUser currentUser = await CurrentUserService.getCurrentUser();
+      String lastName = currentUser.lastName;
+      setState(() {
+        userName = '$lastName';
+      });
+      await getUserLocation(
+          currentUser.lastLatitude, currentUser.lastLongitude);
+    } catch (error) {
+      print('Error fetching current user: $error');
+    }
+  }
+
+  Future<void> getUserLocation(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String address = '${place.locality}';
+        setState(() {
+          location = address;
+        });
+      } else {
+        print('No placemarks found for the provided coordinates.');
+      }
+    } catch (error) {
+      print('Error fetching user location: $error');
+    }
+  }
+
 
   Widget buildActivePostsTable(BuildContext context) {
     return buildTable(activePosts, context, showEditButton: true, showDeleteButton: true);
@@ -111,7 +156,7 @@ class _MyPostPageState extends State<MyPostPage> {
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
         iconTheme: const IconThemeData(
-          color: Colors.white, // Set the color of the back arrow to white
+          color: Colors.white,
         ),
         title: Padding(
           padding: const EdgeInsets.only(top: 12.0),
@@ -123,23 +168,30 @@ class _MyPostPageState extends State<MyPostPage> {
                 color: Colors.white,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Kitchener',
+              Text(
+                location.isNotEmpty ? location : 'Loading...',
                 style: TextStyle(
-                    color: Colors.white, fontSize: 16, letterSpacing: 1.2),
+                  color: Colors.white,
+                  fontSize: 16,
+                  letterSpacing: 1.2,
+                ),
               ),
               const Spacer(),
-              const Padding(
-                padding: EdgeInsets.only(right: 5.0),
+              Padding(
+                padding: const EdgeInsets.only(right: 5.0),
                 child: Text(
-                  'Harry Potter',
+                  userName.isNotEmpty
+                      ? userName[0].toUpperCase() + userName.substring(1)
+                      : 'Loading...',
                   style: TextStyle(
-                      color: Colors.white, fontSize: 16, letterSpacing: 1.2),
+                    color: Colors.white,
+                    fontSize: 16,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigate to UserProfile screen when profile icon is tapped
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => UserProfileScreen()),
@@ -163,21 +215,19 @@ class _MyPostPageState extends State<MyPostPage> {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, // Background color of tabs
+                color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors
-                        .grey.shade300, // Light gray color for the bottom line
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: Offset(0, 2), // changes position of shadow
+                    color: Colors.blueGrey,
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
               child: const TabBar(
-                labelColor: Colors.black, // Color of the text
-                indicatorColor:
-                Color(0xFF1B2A72), // Color of the active tab line
+                labelColor: Colors.black,
+                indicatorColor: Color(0xFF1B2A72),
                 tabs: [
                   Tab(text: 'Active Posts'),
                   Tab(text: 'Inactive Posts'),
@@ -192,12 +242,12 @@ class _MyPostPageState extends State<MyPostPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
-                        Text(
+                        const SizedBox(height: 20),
+                        const Text(
                           'Active Posts',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildActivePostsTable(context),
                       ],
                     ),
@@ -207,12 +257,12 @@ class _MyPostPageState extends State<MyPostPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
-                        Text(
+                        const SizedBox(height: 20),
+                        const Text(
                           'Inactive Posts',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildInactivePostsTable(context),
                       ],
                     ),
@@ -249,7 +299,6 @@ class _MyPostPageState extends State<MyPostPage> {
             );
           }
           if (index == 1) {
-            // Navigate to PostPage when "Post" icon is tapped
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PostPage()),

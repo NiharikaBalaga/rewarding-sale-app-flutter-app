@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/models/CurrentUser.dart';
-import 'package:rewarding_sale_app_flutter_app/models/Location.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
@@ -29,7 +28,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchCurrentUser();
-
   }
 
   Future<void> fetchPosts() async {
@@ -47,13 +45,12 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchCurrentUser() async {
     try {
       CurrentUser currentUser = await CurrentUserService.getCurrentUser();
-      String firstName = currentUser.firstName;
       String lastName = currentUser.lastName;
       setState(() {
         userName = '$lastName';
       });
-      await getUserLocation(currentUser.lastLatitude, currentUser.lastLongitude);
-
+      await getUserLocation(
+          currentUser.lastLatitude, currentUser.lastLongitude);
     } catch (error) {
       print('Error fetching current user: $error');
     }
@@ -61,13 +58,13 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getUserLocation(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
         String address = '${place.locality}';
         setState(() {
           userLocation = address;
-
         });
         fetchPosts();
       } else {
@@ -82,112 +79,117 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     print('Posts:');
     posts.forEach((post) {
-      print('ID: ${post.id}, Title: ${post.productName}'); // Add more fields as needed
-    });// Debug print
+      print(
+          'ID: ${post.id}, Title: ${post.productName}'); // Add more fields as needed
+    }); // Debug print
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: kPrimaryColor,
         iconTheme: IconThemeData(
-        color: Colors.white,
-    ),
-    title: Padding(
-    padding: const EdgeInsets.only(top: 10.0),
-    child: Row(
-    children: [
-    const Icon(
-    CupertinoIcons.location,
-    size: 20,
-    color: Colors.white,
-    ),
-    const SizedBox(width: 5),
-    Text(
-    userLocation.isNotEmpty ? userLocation : 'Loading...',
-    style: TextStyle(
-    color: Colors.white,
-    fontSize: 16,
-    letterSpacing: 1.2,
-    ),
-    ),
-    const Spacer(),
-    Text(
-    userName.isNotEmpty ? userName[0].toUpperCase() + userName.substring(1)  : 'Loading...',
-    style: TextStyle(
-    color: Colors.white,
-    fontSize: 16,
-    letterSpacing: 1.2,
-    ),
-    ),
-    const SizedBox(width: 5),
-    GestureDetector(
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => UserProfileScreen()),
-    );
-    },
-    child: const Icon(
-    CupertinoIcons.profile_circled,
-    size: 30,
-    color: Colors.white,
-    ),
-    ),
-    ],
-    ),
-    ),
-    centerTitle: false,
-    titleSpacing: 24.0,
-    ),
-    body: SafeArea(
-    child: Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: bodyHomePage(posts, context) , // Replace Container() with your implementation of the bodyHomePage widget
-    ),
-    ),
-    bottomNavigationBar: BottomNavigationBar(
-    backgroundColor: kPrimaryColor,
-    selectedItemColor: Colors.white,
-    unselectedItemColor: Colors.grey,
-    selectedLabelStyle: const TextStyle(
-    color: Colors.white,
-    ),
-    unselectedLabelStyle: const TextStyle(
-    color: Colors.grey,
-    ),
-    items: const [
-    BottomNavigationBarItem(
-    icon: Icon(Icons.home),
-    label: 'Home',
-    ),
-    BottomNavigationBarItem(
-    icon: Icon(Icons.add),
-    label: 'Post',
-    ),
-    BottomNavigationBarItem(
-    icon: Icon(Icons.star),
-    label: 'Rewards',
-    ),
-    ],
-    onTap: (index) {
-    if (index == 2) {
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => RewardPage()),
-    );
-    }
-    if (index == 1) {
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => PostPage()),
-    );
-    }
-    if (index == 0) {
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => HomePage()),
-    );
-    }
-    },
-    ),
+          color: Colors.white,
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Row(
+            children: [
+              const Icon(
+                CupertinoIcons.location,
+                size: 20,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                userLocation.isNotEmpty ? userLocation : 'Loading...',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                userName.isNotEmpty
+                    ? userName[0].toUpperCase() + userName.substring(1)
+                    : 'Loading...',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(width: 5),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UserProfileScreen()),
+                  );
+                },
+                child: const Icon(
+                  CupertinoIcons.profile_circled,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+        centerTitle: false,
+        titleSpacing: 24.0,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: bodyHomePage(posts,
+              context), // Replace Container() with your implementation of the bodyHomePage widget
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: kPrimaryColor,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          color: Colors.grey,
+        ),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Post',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: 'Rewards',
+          ),
+        ],
+        onTap: (index) {
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RewardPage()),
+            );
+          }
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PostPage()),
+            );
+          }
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          }
+        },
+      ),
     );
   }
 }
