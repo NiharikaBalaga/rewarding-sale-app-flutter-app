@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchCurrentUser();
+    fetchPosts();
   }
 
   Future<void> fetchPosts() async {
@@ -59,14 +60,14 @@ class _HomePageState extends State<HomePage> {
   Future<void> getUserLocation(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+      await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
         String address = '${place.locality}';
         setState(() {
           userLocation = address;
         });
-        fetchPosts();
+        // fetchPosts();
       } else {
         print('No placemarks found for the provided coordinates.');
       }
