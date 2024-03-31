@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Add your Firebase API key -->
+    <string name="firebase_api_key">AIzaSyBLy9o7uNEuxAEmpe8pF8I6DB6tJ4CBo7g</string>
+
+    <!-- Add your Firebase application ID -->
+    <string name="firebase_application_id">1:91296298912:android:59f6497ccd114a7ca0d6c5</string>
+
+    <!-- Add your Firebase project ID -->
+    <string name="firebase_project_id">reward-sale-app-flutter-app</string>
+
+    <!-- Add your Firebase storage bucket -->
+    <string name="firebase_storage_bucket">reward-sale-app-flutter-app.appspot.com</string>
+
+    <!-- Add your Firebase messaging sender ID -->
+    <string name="firebase_messaging_sender_id">91296298912</string>
+
+    <!-- Add your Firebase measurement ID -->
+    <string name="firebase_measurement_id">G-9K00HSZDJQ</string>
+</resources>

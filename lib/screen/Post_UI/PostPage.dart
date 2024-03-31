@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
+import '../../services/createnewpostservice.dart';
+import '../../services/getplaceidservice.dart';
+import '../../services/updateuserlocation.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -22,42 +27,31 @@ class PostPage extends StatelessWidget {
         iconTheme: IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),
-        actions: [
-          // Add Post button to AppBar
-          TextButton(
-            onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => PostPage(),
-              //   ),
-              // );
-              // Handle the action when the Post button is pressed
-              // You can navigate to another page or perform any desired action
-              print('Post button pressed');
-            },
-            child: Text(
-              'Post',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+        // actions: [
+        //   // Add Post button to AppBar
+        //   TextButton(
+        //     onPressed: ()  {
+        //       print('Post button pressed');
+        //
+        //     },
+        //     child: Text(
+        //       'Post',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: MyWidget(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: kPrimaryColor,
-        // Set the background color
         selectedItemColor: Colors.white,
-        // Set the selected item color
         unselectedItemColor: Colors.grey,
-        // Set the unselected item color
         selectedLabelStyle: TextStyle(color: Colors.white),
-        // Set the selected label color
         unselectedLabelStyle: TextStyle(color: Colors.grey),
-        // Set the unselected label color
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -80,7 +74,6 @@ class PostPage extends StatelessWidget {
             );
           }
           if (index == 1) {
-            // Navigate to PostPage when "Post" icon is tapped
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PostPage()),
@@ -101,14 +94,28 @@ class PostPage extends StatelessWidget {
 class MyWidget extends StatefulWidget {
   @override
   _MyWidgetState createState() => _MyWidgetState();
+
+  static _MyWidgetState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyWidgetState>()!;
 }
 
 class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
+  String? _location;
+  late String _placeId;
+  // String placeId = 'ChIJTa2TPvn2K4gRiHG331ctW2I';
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _productNameController = TextEditingController();
+  TextEditingController _productDescriptionController = TextEditingController();
+  TextEditingController _oldQuantityController = TextEditingController();
+  TextEditingController _newQuantityController = TextEditingController();
+  TextEditingController _oldPriceController = TextEditingController();
+  TextEditingController _newPriceController = TextEditingController();
+
   Future<void> _getProductImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    await ImagePicker().pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedFile != null) {
@@ -120,7 +127,7 @@ class _MyWidgetState extends State<MyWidget> {
 
   Future<void> _getPriceTagImage() async {
     final pickedFile1 =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    await ImagePicker().pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedFile1 != null) {
@@ -128,6 +135,79 @@ class _MyWidgetState extends State<MyWidget> {
         print('Image1 path: ${_image1?.path}');
       }
     });
+  }
+
+  // Inside your widget or wherever you want to call the service function
+  void _callCreateNewPostService() async {
+    try {
+      // Extract values from TextControllers
+      String productName = _productNameController.text;
+      double oldPrice = double.parse(_oldPriceController.text.trim());
+      double newPrice = double.parse(_newPriceController.text.trim());
+      File priceTagImage = _image1!;
+      File productImage = _image!;
+      int newQuantity = int.parse(_newQuantityController.text);
+      int oldQuantity = int.parse(_oldQuantityController.text);
+      String storePlaceId = _placeId;
+
+      // Call the createNewPost function
+      await NewPostService.createNewPost(
+        productName: productName,
+        oldPrice: oldPrice,
+        newPrice: newPrice,
+        priceTagImage: priceTagImage,
+        productImage: productImage,
+        newQuantity: newQuantity,
+        oldQuantity: oldQuantity,
+        storePlaceId: storePlaceId
+      );
+
+      // If execution reaches this point, it means the function call was successful
+      print('createNewPost function called successfully');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()));
+    } catch (error) {
+      // Handle any errors that occur during the function call
+      print('Error calling createNewPost function: $error');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()));
+    }
+  }
+
+  void _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      // double latitude = position.latitude;
+      // double longitude = position.longitude;
+
+      double latitude = 43.445395;
+      double longitude = -80.579977;
+
+      String placeId = await getPlaceId(latitude, longitude);
+      print('Place ID: $placeId');
+
+      await LocationService.updateUserLocation(latitude, longitude);
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      String currentLocation = (placemarks[0].street ?? '') + ', ' + (placemarks[0].locality ?? '');
+
+      String location = currentLocation.isEmpty ? 'Unknown' : currentLocation;
+      setState(() {
+        _location = location;
+        _locationController.text = _location ?? '';
+        _placeId = placeId;
+      });
+
+      print('User location: $_location');
+      print('latitude: $latitude');
+      print('longitude: $longitude');
+
+      print('Place ID from func: $placeId');
+    } catch (e) {
+      print('Error fetching location: $e');
+    }
   }
 
   @override
@@ -142,8 +222,9 @@ class _MyWidgetState extends State<MyWidget> {
               height: 16,
             ),
             SizedBox(
-              height: 50,
+              height: 70,
               child: TextField(
+                controller: _locationController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 0.5),
@@ -153,12 +234,18 @@ class _MyWidgetState extends State<MyWidget> {
                     borderSide: BorderSide(color: kPrimaryColor),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  suffixIcon: Icon(
-                    Icons.place_rounded,
-                    color: Colors.blueGrey,
-                    size: 32,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Icons.place_rounded,
+                      color: kPrimaryColor,
+                      size: 32,
+                    ),
+                    onPressed: () {
+                      _getCurrentLocation();
+                      // placeAutoComplete("Dubai");
+                    },
                   ),
-                  labelText: "Select your location",
+                  labelText: "Get Your Current location",
                   labelStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white12,
@@ -171,43 +258,38 @@ class _MyWidgetState extends State<MyWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Image Widget 1
                 Expanded(
                   child: Column(
                     children: [
                       _image != null
                           ? Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors
-                                      .black12, // Set your desired border color
-                                  width: 1, // Set your desired border width
-                                ),
-                                borderRadius: BorderRadius.circular(3),
-                                // Set your desired border radius
-                              ),
-                              child: Image.file(
-                                _image!,
-                                height: 130,
-                                width: 130,
-                              ),
-                            )
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black12,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.file(
+                          _image!,
+                          height: 130,
+                          width: 130,
+                        ),
+                      )
                           : Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors
-                                      .black54, // Set your desired border color
-                                  width: 1, // Set your desired border width
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    3), // Set your desired border radius
-                              ),
-                              child: Image.asset(
-                                'assets/images/noimageavailable.png', // Replace with the path to your asset image
-                                height: 130,
-                                width: 130,
-                              ),
-                            ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black54,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.asset(
+                          'assets/images/noimageavailable.png',
+                          height: 130,
+                          width: 130,
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       ElevatedButton.icon(
                         onPressed: _getProductImage,
@@ -215,14 +297,12 @@ class _MyWidgetState extends State<MyWidget> {
                           'Take Image',
                           style: TextStyle(color: Colors.white),
                         ),
-                        icon:
-                            const Icon(Icons.add_a_photo, color: Colors.white),
+                        icon: const Icon(Icons.add_a_photo, color: Colors.white),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryColor,
-                          elevation: 2, // Set your desired background color
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                10), // Adjust the radius as needed
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
@@ -230,43 +310,38 @@ class _MyWidgetState extends State<MyWidget> {
                   ),
                 ),
                 SizedBox(width: 16),
-                // Image Widget 2
                 Expanded(
                   child: Column(
                     children: [
                       _image1 != null
                           ? Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors
-                                      .black54, // Set your desired border color
-                                  width: 1, // Set your desired border width
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    3), // Set your desired border radius
-                              ),
-                              child: Image.file(
-                                _image1!,
-                                height: 130,
-                                width: 130,
-                              ),
-                            )
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black54,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.file(
+                          _image1!,
+                          height: 130,
+                          width: 130,
+                        ),
+                      )
                           : Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors
-                                      .black54, // Set your desired border color
-                                  width: 1, // Set your desired border width
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    3), // Set your desired border radius
-                              ),
-                              child: Image.asset(
-                                'assets/images/noimageavailable.png', // Replace with the path to your asset image
-                                height: 130,
-                                width: 130,
-                              ),
-                            ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black54,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Image.asset(
+                          'assets/images/noimageavailable.png',
+                          height: 130,
+                          width: 130,
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       ElevatedButton.icon(
                         onPressed: _getPriceTagImage,
@@ -274,14 +349,12 @@ class _MyWidgetState extends State<MyWidget> {
                           'Price Tag',
                           style: TextStyle(color: Colors.white),
                         ),
-                        icon:
-                            const Icon(Icons.add_a_photo, color: Colors.white),
+                        icon: const Icon(Icons.add_a_photo, color: Colors.white),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryColor,
-                          elevation: 2, // Set your desired background color
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                10), // Adjust the radius as needed
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
@@ -290,12 +363,11 @@ class _MyWidgetState extends State<MyWidget> {
                 ),
               ],
             ),
+            SizedBox(height: 25),
             SizedBox(
-              height: 25,
-            ),
-            SizedBox(
-              height: 50,
+              height: 70,
               child: TextField(
+                controller: _productNameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 0.5),
@@ -317,12 +389,11 @@ class _MyWidgetState extends State<MyWidget> {
                 ),
               ),
             ),
+            SizedBox(height: 25),
             SizedBox(
-              height: 25,
-            ),
-            SizedBox(
-              height: 50,
+              height: 100,
               child: TextField(
+                controller: _productDescriptionController,
                 maxLines: 3,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -345,21 +416,18 @@ class _MyWidgetState extends State<MyWidget> {
                 ),
               ),
             ),
+            SizedBox(height: 25),
             SizedBox(
-              height: 25,
-            ),
-            SizedBox(
-              height: 50,
+              height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Old Quantity Field
                   Flexible(
                     child: TextField(
+                      controller: _oldQuantityController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -378,15 +446,13 @@ class _MyWidgetState extends State<MyWidget> {
                       keyboardType: TextInputType.number,
                     ),
                   ),
-
                   SizedBox(width: 16),
-                  // New Quantity Field
                   Flexible(
                     child: TextField(
+                      controller: _newQuantityController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -397,7 +463,7 @@ class _MyWidgetState extends State<MyWidget> {
                           Icons.production_quantity_limits_outlined,
                           color: kPrimaryColor,
                         ),
-                        labelText: "New",
+                        labelText: "New Quantity",
                         labelStyle: TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white12,
@@ -408,21 +474,18 @@ class _MyWidgetState extends State<MyWidget> {
                 ],
               ),
             ),
+            SizedBox(height: 25),
             SizedBox(
-              height: 25,
-            ),
-            SizedBox(
-              height: 50,
+              height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Old Quantity Field
                   Flexible(
                     child: TextField(
+                      controller: _oldPriceController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -442,13 +505,12 @@ class _MyWidgetState extends State<MyWidget> {
                     ),
                   ),
                   SizedBox(width: 16),
-                  // New Quantity Field
                   Flexible(
                     child: TextField(
+                      controller: _newPriceController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -470,12 +532,33 @@ class _MyWidgetState extends State<MyWidget> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 24,
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _callCreateNewPostService,
+              style: ElevatedButton.styleFrom(
+                primary: kPrimaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                child: Text(
+                  "Create New Post",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
+
         ),
       ),
+
     );
+
   }
 }
