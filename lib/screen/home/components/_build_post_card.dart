@@ -182,7 +182,7 @@ class _PostCardState extends State<PostCard> {
           Row(
             children: [
               Text(
-                post.storeName,
+                post.storeName.split(' ').take(2).join(' '),
                 style: const TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 14,

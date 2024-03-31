@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-//import 'package:rewarding_sale_app_flutter_app/components/network_utility.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
+import '../../services/createnewpostservice.dart';
+import '../../services/getplaceidservice.dart';
 import '../../services/updateuserlocation.dart';
 
 class PostPage extends StatelessWidget {
@@ -26,23 +27,23 @@ class PostPage extends StatelessWidget {
         iconTheme: IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),
-        actions: [
-          // Add Post button to AppBar
-          TextButton(
-            onPressed: ()  {
-              print('Post button pressed');
-
-            },
-            child: Text(
-              'Post',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   // Add Post button to AppBar
+        //   TextButton(
+        //     onPressed: ()  {
+        //       print('Post button pressed');
+        //
+        //     },
+        //     child: Text(
+        //       'Post',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: MyWidget(),
       bottomNavigationBar: BottomNavigationBar(
@@ -102,7 +103,8 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
   String? _location;
-  String placeId = 'ChIJTa2TPvn2K4gRiHG331ctW2I';
+  late String _placeId;
+  // String placeId = 'ChIJTa2TPvn2K4gRiHG331ctW2I';
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
   TextEditingController _productDescriptionController = TextEditingController();
@@ -135,56 +137,79 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
+  // Inside your widget or wherever you want to call the service function
+  void _callCreateNewPostService() async {
+    try {
+      // Extract values from TextControllers
+      String productName = _productNameController.text;
+      double oldPrice = double.parse(_oldPriceController.text.trim());
+      double newPrice = double.parse(_newPriceController.text.trim());
+      File priceTagImage = _image1!;
+      File productImage = _image!;
+      int newQuantity = int.parse(_newQuantityController.text);
+      int oldQuantity = int.parse(_oldQuantityController.text);
+      String storePlaceId = _placeId;
+
+      // Call the createNewPost function
+      await NewPostService.createNewPost(
+        productName: productName,
+        oldPrice: oldPrice,
+        newPrice: newPrice,
+        priceTagImage: priceTagImage,
+        productImage: productImage,
+        newQuantity: newQuantity,
+        oldQuantity: oldQuantity,
+        storePlaceId: storePlaceId
+      );
+
+      // If execution reaches this point, it means the function call was successful
+      print('createNewPost function called successfully');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()));
+    } catch (error) {
+      // Handle any errors that occur during the function call
+      print('Error calling createNewPost function: $error');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()));
+    }
+  }
+
   void _getCurrentLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      double latitude = 43.4438144;
-      double longitude = -80.510976;
+      // double latitude = position.latitude;
+      // double longitude = position.longitude;
+
+      double latitude = 43.445395;
+      double longitude = -80.579977;
+
+      String placeId = await getPlaceId(latitude, longitude);
+      print('Place ID: $placeId');
 
       await LocationService.updateUserLocation(latitude, longitude);
 
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(latitude, longitude);
-      String currentlocation =
-          (placemarks[0].street ?? '') + ', ' + (placemarks[0].locality ?? '');
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      String currentLocation = (placemarks[0].street ?? '') + ', ' + (placemarks[0].locality ?? '');
 
-      String location = currentlocation.isEmpty ? 'Unknown' : currentlocation;
+      String location = currentLocation.isEmpty ? 'Unknown' : currentLocation;
       setState(() {
         _location = location;
         _locationController.text = _location ?? '';
+        _placeId = placeId;
       });
 
       print('User location: $_location');
       print('latitude: $latitude');
       print('longitude: $longitude');
-      print('Place ID: $placeId');
 
-      //getPlaceId(latitude, longitude, currentlocation);
-      print('Place ID from func:' );
+      print('Place ID from func: $placeId');
     } catch (e) {
       print('Error fetching location: $e');
     }
   }
 
-  // Future<void> placeAutoComplete(String query) async {
-  //
-  //   String apikey ="AIzaSyAaTmFCRd8UZqbpYYPNai6aR33hc8OHJj4";
-  //   Uri uri = Uri.https("maps.google.com",
-  //             'maps/api/place/autocomplete/json',
-  //   {
-  //     "input":query,
-  //     "key": apikey,
-  //   });
-  //
-  //   String? response = await NetworkUtility.fetchUrl(uri);
-  //   if (response != null){
-  //     print(response);
-  //   }
-  //
-  //
-  // }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -197,7 +222,7 @@ class _MyWidgetState extends State<MyWidget> {
               height: 16,
             ),
             SizedBox(
-              height: 50,
+              height: 70,
               child: TextField(
                 controller: _locationController,
                 decoration: InputDecoration(
@@ -340,7 +365,7 @@ class _MyWidgetState extends State<MyWidget> {
             ),
             SizedBox(height: 25),
             SizedBox(
-              height: 50,
+              height: 70,
               child: TextField(
                 controller: _productNameController,
                 decoration: InputDecoration(
@@ -366,7 +391,7 @@ class _MyWidgetState extends State<MyWidget> {
             ),
             SizedBox(height: 25),
             SizedBox(
-              height: 50,
+              height: 100,
               child: TextField(
                 controller: _productDescriptionController,
                 maxLines: 3,
@@ -393,7 +418,7 @@ class _MyWidgetState extends State<MyWidget> {
             ),
             SizedBox(height: 25),
             SizedBox(
-              height: 50,
+              height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -451,7 +476,7 @@ class _MyWidgetState extends State<MyWidget> {
             ),
             SizedBox(height: 25),
             SizedBox(
-              height: 50,
+              height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -508,6 +533,26 @@ class _MyWidgetState extends State<MyWidget> {
               ),
             ),
             SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _callCreateNewPostService,
+              style: ElevatedButton.styleFrom(
+                primary: kPrimaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                child: Text(
+                  "Create New Post",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
 
         ),

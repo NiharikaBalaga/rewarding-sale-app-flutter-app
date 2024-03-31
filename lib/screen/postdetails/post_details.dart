@@ -17,6 +17,9 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   int upvoteCount = 0;
   int _currentImageIndex = 0;
+  bool _isNewPriceConfirmed = false;
+  bool _isOldPriceConfirmed = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,9 +137,30 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       'New Price:',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
                     ),
-                    subtitle: Text(
-                      '${widget.post.newPrice}',
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    subtitle: Row(
+                      children: [
+                        Text(
+                          '${widget.post.newPrice}',
+                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                        ),
+                        SizedBox(width: 170),
+                        Text(
+                          'Confirm',
+                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto', color: _isNewPriceConfirmed ? Colors.green : Colors.blueGrey),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _isNewPriceConfirmed ? Icons.check_circle : Icons.radio_button_unchecked,
+                            color: _isNewPriceConfirmed ? Colors.green : Colors.blueGrey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isNewPriceConfirmed = !_isNewPriceConfirmed;
+                            });
+                            print('New Price Confirmed: $_isNewPriceConfirmed');
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   ListTile(
@@ -144,9 +168,30 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       'Old Price:',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
                     ),
-                    subtitle: Text(
-                      '${widget.post.oldPrice}',
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    subtitle: Row(
+                      children: [
+                        Text(
+                          '${widget.post.oldPrice}',
+                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                        ),
+                        SizedBox(width: 170),
+                        Text(
+                          'Confirm',
+                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto', color: _isOldPriceConfirmed ? Colors.green : Colors.blueGrey),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _isOldPriceConfirmed ? Icons.check_circle : Icons.radio_button_unchecked,
+                            color: _isOldPriceConfirmed ? Colors.green : Colors.blueGrey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isOldPriceConfirmed = !_isOldPriceConfirmed;
+                            });
+                            print('Old Price Confirmed: $_isOldPriceConfirmed');
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   ListTile(
@@ -202,7 +247,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                 ],
               ),
-
             ],
           ),
         ),
