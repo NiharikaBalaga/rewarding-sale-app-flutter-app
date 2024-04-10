@@ -3,11 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
+import '../../models/Post.dart';
 import '../reward/reward.dart';
 import 'package:geocoding/geocoding.dart';
 import '../user_profile/user_profile.dart';
 import '../../services/getcurrentuserservice.dart';
 import '../../models/CurrentUser.dart';
+
 
 class MyPostPage extends StatefulWidget {
   MyPostPage({Key? key}) : super(key: key);
@@ -15,7 +17,17 @@ class MyPostPage extends StatefulWidget {
   @override
   _MyPostPageState createState() => _MyPostPageState();
 }
+class Post {
+  final String productName;
+  final String quantity;
+  final String price;
 
+  Post({
+    required this.productName,
+    required this.quantity,
+    required this.price,
+  });
+}
 class _MyPostPageState extends State<MyPostPage> {
   List<String> activePosts = ['Active Post 1', 'Active Post 2', 'Active Post 3'];
   List<String> inactivePosts = ['Inactive Post 1', 'Inactive Post 2'];
@@ -105,7 +117,8 @@ class _MyPostPageState extends State<MyPostPage> {
                     IconButton(
                       icon: Icon(Icons.edit, color: Colors.green), // Change color of edit icon to green
                       onPressed: () {
-                        // Implement action for editing post
+          // Implement action for editing post
+
                       },
                     ),
                   if (showDeleteButton) // Conditionally render delete button based on showDeleteButton flag
@@ -176,6 +189,7 @@ class _MyPostPageState extends State<MyPostPage> {
                   letterSpacing: 1.2,
                 ),
               ),
+
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(right: 5.0),
@@ -189,7 +203,9 @@ class _MyPostPageState extends State<MyPostPage> {
                     letterSpacing: 1.2,
                   ),
                 ),
+
               ),
+
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -315,3 +331,4 @@ class _MyPostPageState extends State<MyPostPage> {
     );
   }
 }
+

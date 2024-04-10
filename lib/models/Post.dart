@@ -24,6 +24,7 @@ class Post {
   final String storeProvinceLongName;
   final String storeProvinceShortName;
   final String storeUrl;
+  List<String>? comments; // Make comments nullable
 
   Post({
     required this.id,
@@ -51,6 +52,7 @@ class Post {
     required this.storeProvinceLongName,
     required this.storeProvinceShortName,
     required this.storeUrl,
+    this.comments, // Make comments nullable
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -80,6 +82,7 @@ class Post {
       storeProvinceLongName: json['storeProvinceLongName'] ?? '',
       storeProvinceShortName: json['storeProvinceShortName'] ?? '',
       storeUrl: json['storeUrl'] ?? '',
+      comments: json['comments'] != null ? List<String>.from(json['comments']) : null, // Initialize comments as an empty list if not provided
     );
   }
 }

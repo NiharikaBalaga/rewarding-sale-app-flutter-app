@@ -5,6 +5,7 @@ import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+
 class PostDetailPage extends StatefulWidget {
   final Post post;
 
@@ -19,6 +20,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
   int _currentImageIndex = 0;
   bool _isNewPriceConfirmed = false;
   bool _isOldPriceConfirmed = false;
+  late List<String> comments; // List to store comments
+  bool _isEditing = false;
+  late int _editIndex;
+  late TextEditingController _editController;
+  late TextEditingController _commentController;
+
+  @override
+  void initState() {
+    super.initState();
+    comments = List<String>.from(widget.post.comments ?? []); // Initialize comments list
+    _editController = TextEditingController();
+    _commentController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +56,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ],
         foregroundColor: Colors.white,
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -214,8 +227,68 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Comments',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                  ),
+                  SizedBox(height: 10),
+                  _buildAddCommentField(), // Render the add comment UI
+                  SizedBox(height: 10),
+                  for (var commentIndex = 0; commentIndex < comments.length; commentIndex++)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _isEditing && commentIndex == _editIndex
+                                ? TextField(
+                              controller: _editController,
+                              onSubmitted: (editedComment) {
+                                setState(() {
+                                  comments[commentIndex] = editedComment; // Update the comment in the list
+                                  _isEditing = false; // Set editing flag to false
+                                });
+                              },
+                            )
+                                : Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(comments[commentIndex]),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (!_isEditing) {
+                                  _editIndex = commentIndex;
+                                  _editController.text = comments[commentIndex];
+                                  _isEditing = true;
+                                } else {
+                                  comments[_editIndex] = _editController.text;
+                                  _isEditing = false;
+                                }
+                              });
+                            },
+                            icon: _isEditing && commentIndex == _editIndex ? Icon(Icons.check) : Icon(Icons.edit, color: kPrimaryColor),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                comments.removeAt(commentIndex);
+                              });
+                            },
+                            icon: Icon(Icons.delete, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
+              SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -256,9 +329,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
         selectedItemColor: Colors.white, // Set the selected item color
         unselectedItemColor: Colors.grey, // Set the unselected item color
         selectedLabelStyle: const TextStyle(
-            color: Colors.white), // Set the selected label color
+          color: Colors.white,
+        ), // Set the selected label color
         unselectedLabelStyle: const TextStyle(
-            color: Colors.grey), // Set the unselected label color
+          color: Colors.grey,
+        ), // Set the unselected label color
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -281,7 +356,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               MaterialPageRoute(builder: (context) => PostPage()),
             );
           }
-          if (index == 0){
+          if (index == 0) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomePage()),
@@ -289,6 +364,43 @@ class _PostDetailPageState extends State<PostDetailPage> {
           }
         },
       ),
+    );
+  }
+
+  // Widget to add a new comment
+  Widget _buildAddCommentField() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.grey[200],
+            ),
+            child: TextField(
+              controller: _commentController,
+              decoration: InputDecoration(
+                hintText: 'Add a comment...',
+                border: InputBorder.none, // Remove the default border
+                contentPadding: EdgeInsets.all(12), // Adjust the content padding
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(width: 10),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              if (_commentController.text.isNotEmpty) {
+                comments.add(_commentController.text); // Add the comment to the list
+                _commentController.clear(); // Clear the comment text field
+              }
+            });
+          },
+          icon: Icon(Icons.send,color: kPrimaryColor), // Send icon
+        ),
+      ],
     );
   }
 
