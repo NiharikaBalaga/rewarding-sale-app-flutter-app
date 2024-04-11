@@ -4,6 +4,7 @@ import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
 import '../../models/Post.dart';
+import '../../services/getpostservice.dart';
 import '../reward/reward.dart';
 import 'package:geocoding/geocoding.dart';
 import '../user_profile/user_profile.dart';
@@ -17,20 +18,10 @@ class MyPostPage extends StatefulWidget {
   @override
   _MyPostPageState createState() => _MyPostPageState();
 }
-class Post {
-  final String productName;
-  final String quantity;
-  final String price;
 
-  Post({
-    required this.productName,
-    required this.quantity,
-    required this.price,
-  });
-}
 class _MyPostPageState extends State<MyPostPage> {
-  List<String> activePosts = ['Active Post 1', 'Active Post 2', 'Active Post 3'];
-  List<String> inactivePosts = ['Inactive Post 1', 'Inactive Post 2'];
+  List<String> activePosts = [];
+  List<String> inactivePosts = [];
 
   String userName = '';
   String location = '';
@@ -39,6 +30,7 @@ class _MyPostPageState extends State<MyPostPage> {
   void initState() {
     super.initState();
     fetchCurrentUser();
+    fetchPosts();
   }
 
   Future<void> fetchCurrentUser() async {
@@ -54,6 +46,53 @@ class _MyPostPageState extends State<MyPostPage> {
       print('Error fetching current user: $error');
     }
   }
+
+  Future<void> fetchPosts() async {
+    try {
+      List<Post> fetchedPosts = await PostService.fetchAllPosts();
+
+      // Get the current date
+      DateTime currentDate = DateTime.now();
+
+      // Filter active posts based on the condition
+      List<Post> activeFilteredPosts = fetchedPosts.where((post) {
+        return currentDate.difference(post.createdAt).inDays <= 30;
+      }).toList();
+
+      // Filter inactive posts based on the condition
+      List<Post> inactiveFilteredPosts = fetchedPosts.where((post) {
+        return currentDate.difference(post.createdAt).inDays > 30;
+      }).toList();
+
+      // Extract product names from active filtered posts
+      List<String> activeProductNames = activeFilteredPosts.map((post) {
+        List<String> words = post.productName.split(' ');
+        return words.length >= 2 ? '${words[0]} ${words[1]}' : post.productName;
+      }).toList();
+
+      // Update active posts state
+      setState(() {
+        activePosts = activeProductNames;
+      });
+
+      // Check if there are any inactive posts more than one month old
+      if (inactiveFilteredPosts.isNotEmpty) {
+        // Display inactive posts
+        setState(() {
+          inactivePosts = inactiveFilteredPosts.map((post) => post.productName).toList();
+        });
+      } else {
+        // Display message for no inactive posts
+        setState(() {
+          inactivePosts = ['No posts more than 1 month old'];
+        });
+      }
+    } catch (error) {
+      print('Error fetching posts: $error');
+    }
+  }
+
+
 
   Future<void> getUserLocation(double latitude, double longitude) async {
     try {
@@ -75,11 +114,32 @@ class _MyPostPageState extends State<MyPostPage> {
 
 
   Widget buildActivePostsTable(BuildContext context) {
-    return buildTable(activePosts, context, showEditButton: true, showDeleteButton: true);
+    //return buildTable(activePosts, context, showEditButton: true, showDeleteButton: true);
+    bool hasActivePosts = activePosts.isNotEmpty;
+
+    if (!hasActivePosts) {
+      return Center(
+        child: Text('No active posts available for display'),
+      );
+    }
+
+    return buildTable(
+      activePosts,
+      context,
+      showEditButton: hasActivePosts,
+      showDeleteButton: hasActivePosts,
+    );
   }
 
   Widget buildInactivePostsTable(BuildContext context) {
-    return buildTable(inactivePosts, context, showDeleteButton: true);
+    //return buildTable(inactivePosts, context, showDeleteButton: true);
+    bool hasInactivePosts = inactivePosts.isNotEmpty && inactivePosts[0] != 'No posts more than 1 month old';
+
+    return buildTable(
+      inactivePosts,
+      context,
+      showDeleteButton: hasInactivePosts,
+    );
   }
 
   Widget buildTable(List<String> posts, BuildContext context, {bool showEditButton = false, bool showDeleteButton = false}) {
@@ -117,7 +177,7 @@ class _MyPostPageState extends State<MyPostPage> {
                     IconButton(
                       icon: Icon(Icons.edit, color: Colors.green), // Change color of edit icon to green
                       onPressed: () {
-          // Implement action for editing post
+                        // Implement action for editing post
 
                       },
                     ),
@@ -331,5 +391,7 @@ class _MyPostPageState extends State<MyPostPage> {
     );
   }
 }
+
+
 
 
