@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rewarding_sale_app_flutter_app/services/api_services/auth.dart';
 import 'dart:io';
 
 import '../../constant.dart';
@@ -209,8 +211,17 @@ class _UserProfileState extends State<UserProfile> {
             ),
             Divider(),
             InkWell(
-              onTap: () {
-                // Implement action when Log out is tapped
+              onTap:  () async {
+                try {
+                  final AuthService authService = AuthService();
+                  await authService.logoutUser();
+                  Navigator.of(context).pushReplacementNamed('/login');
+                } catch(error) {
+                  if (kDebugMode) {
+                    print('Logout -error---$error');
+                  }
+                  Navigator.of(context).pushReplacementNamed('/login');
+                }
               },
               child: ListTile(
                 title: Text('Log out'),
@@ -235,4 +246,23 @@ class _UserProfileState extends State<UserProfile> {
       ],
     );
   }
+
+  void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Row(
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("Logging out..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
+

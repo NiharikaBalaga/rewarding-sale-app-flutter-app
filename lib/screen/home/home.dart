@@ -13,7 +13,7 @@ import 'package:rewarding_sale_app_flutter_app/services/getpostservice.dart';
 import 'components/_body.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
       await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        String address = '${place.locality}';
+        String address = '${place.street}';
         setState(() {
           userLocation = address;
         });

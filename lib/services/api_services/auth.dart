@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:rewarding_sale_app_flutter_app/Enums/httpenums.dart';
 import 'package:rewarding_sale_app_flutter_app/config/apiconfig.dart';
 import 'package:rewarding_sale_app_flutter_app/helpers/httpclient.dart';
@@ -45,7 +46,9 @@ class AuthService {
 
       return jsonDecode(response.body);
     } catch (error) {
-      print("getCurrentUser-error----${error}");
+      if (kDebugMode) {
+        print("getCurrentUser-error----$error");
+      }
       rethrow;
     }
   }
@@ -77,4 +80,63 @@ class AuthService {
     await secureStorageService.write(_keyAccessToken, newAccessToken);
     await secureStorageService.write(_keyRefreshToken, newRefreshToken);
   }
+  
+  Future updateUserLocation(double longitude, double latitude) async {
+    try {
+      // Compare last location to check should we make the API call
+      var lastLongitude =
+      await secureStorageService.read(SecureStorageService.KeyLongitude);
+      var lastLatitude =
+      await secureStorageService.read(SecureStorageService.KeyLatitude);
+
+
+      if (lastLongitude != null && lastLatitude != null) {
+        if (double.parse(lastLongitude) == longitude &&
+            double.parse(lastLatitude) == latitude) {
+          return;
+        }
+      }
+      final payload =
+      jsonEncode({'longitude': longitude, 'latitude': latitude});
+      final authToken = await _getAccessToken();
+      final response = await HttpClient.sendRequest(HttpMethod.PATCH, payload,
+          '${ApiConfig.baseUrlAuth}${ApiConfig.userLocationEndpoint}',
+          authToken: authToken);
+
+      if (response.statusCode == 200) {
+        // Sore the location into storage
+        await secureStorageService.write(
+            SecureStorageService.KeyLongitude, longitude.toString());
+        await secureStorageService.write(
+            SecureStorageService.KeyLatitude, latitude.toString());
+      }
+      if (kDebugMode) {
+        print('User-Location-Update:${response.statusCode}, ${response.body}');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("updateUserLocation-error----$error");
+      }
+    }
+  }
+
+  Future<bool> logoutUser() async {
+    try {
+      final authToken = await _getAccessToken();
+      await HttpClient.sendRequest(
+          HttpMethod.GET, null, '${ApiConfig.baseUrlAuth}${ApiConfig.logoutUser}',
+          authToken: authToken);
+
+      // Clear Up all tokens and Locations
+      await secureStorageService.deleteAll();
+
+      return true;
+    } catch (error) {
+      if (kDebugMode) {
+        print("logoutUser-error----$error");
+      }
+      return false;
+    }
+  }
+
 }

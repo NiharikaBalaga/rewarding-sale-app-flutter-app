@@ -10,4 +10,5 @@ class ApiConfig {
   static const String signupUserEndpoint ='/auth/user/signup';
   static const String baseUrlPost = 'http://10.0.2.2:3001/api';
   static const String getPostEndpoint = '/post/allpost';
+  static const String logoutUser = '/auth/user/logout';
 }
