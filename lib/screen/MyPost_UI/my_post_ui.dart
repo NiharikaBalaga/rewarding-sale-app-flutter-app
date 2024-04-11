@@ -52,6 +52,7 @@ class _MyPostPageState extends State<MyPostPage> {
 
   Future<void> fetchPosts() async {
     try {
+      CurrentUser currentUser = await CurrentUserService.getCurrentUser();
       List<Post> fetchedPosts = await PostService.fetchAllPosts();
 
       // Get the current date
@@ -59,18 +60,18 @@ class _MyPostPageState extends State<MyPostPage> {
 
       // Filter active posts based on the condition
       activePosts = fetchedPosts.where((post) {
-        return currentDate.difference(post.createdAt).inDays <= 30;
+        return post.userId == currentUser.id &&
+            currentDate.difference(post.createdAt).inDays <= 30;
       }).toList();
 
       // Filter inactive posts based on the condition
       inactivePosts = fetchedPosts.where((post) {
-        return currentDate.difference(post.createdAt).inDays > 30;
+        return post.userId == currentUser.id &&
+            currentDate.difference(post.createdAt).inDays > 30;
       }).toList();
 
       // Set state to update UI
-      setState(() {
-      });
-
+      setState(() {});
     } catch (error) {
       print('Error fetching posts: $error');
     }
@@ -93,23 +94,6 @@ class _MyPostPageState extends State<MyPostPage> {
       print('Error fetching user location: $error');
     }
   }
-
-  // Widget buildActivePostsTable(BuildContext context) {
-  //   return buildTable(
-  //     activePosts,
-  //     context,
-  //     showEditButton: true,
-  //     showDeleteButton: true,
-  //   );
-  // }
-  //
-  // Widget buildInactivePostsTable(BuildContext context) {
-  //   return buildTable(
-  //     inactivePosts,
-  //     context,
-  //     showDeleteButton: true,
-  //   );
-  // }
 
   Widget buildActivePostsTable(BuildContext context) {
     //return buildTable(activePosts, context, showEditButton: true, showDeleteButton: true);
@@ -201,7 +185,7 @@ class _MyPostPageState extends State<MyPostPage> {
                   if (showDeleteButton)
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
+                      onPressed: () async {
                         // Show confirmation dialog before deleting the post
                         showDialog(
                           context: context,
@@ -221,9 +205,8 @@ class _MyPostPageState extends State<MyPostPage> {
                                   onPressed: () async {
                                     bool deleted = await PostApiService.deletePost(post.id);
                                     if (deleted) {
-                                      setState(() {
-                                        posts.remove(post.id);
-                                      });
+                                      // Refresh the page after successful deletion
+                                      await fetchPosts();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -252,6 +235,7 @@ class _MyPostPageState extends State<MyPostPage> {
                         );
                       },
                     ),
+
                 ],
               ),
             ),

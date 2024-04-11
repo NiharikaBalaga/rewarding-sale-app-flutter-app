@@ -121,17 +121,37 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
-  // Inside your widget or wherever you want to call the service function
   void _callCreateNewPostService() async {
     try {
       // Extract values from TextControllers
-      String productName = _productNameController.text;
-      double oldPrice = double.parse(_oldPriceController.text.trim());
-      double newPrice = double.parse(_newPriceController.text.trim());
+      String productName = _productNameController.text.trim();
+      String productDescription = _productDescriptionController.text.trim();
+      double oldPrice = double.tryParse(_oldPriceController.text.trim()) ?? 0.0;
+      double newPrice = double.tryParse(_newPriceController.text.trim()) ?? 0.0;
+      int newQuantity = int.tryParse(_newQuantityController.text.trim()) ?? 0;
+      int oldQuantity = int.tryParse(_oldQuantityController.text.trim()) ?? 0;
+
+      // Check if any of the required fields are empty
+      if (productName.isEmpty ||
+          productDescription.isEmpty ||
+          oldPrice <= 0 ||
+          newPrice <= 0 ||
+          newQuantity <= 0 ||
+          oldQuantity <= 0 ||
+          _image == null ||
+          _image1 == null) {
+        // Show a snackbar or an alert dialog indicating that all fields are required
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('All fields are required.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Exit the function without proceeding further
+      }
+
       File priceTagImage = _image1!;
       File productImage = _image!;
-      int newQuantity = int.parse(_newQuantityController.text);
-      int oldQuantity = int.parse(_oldQuantityController.text);
       String storePlaceId = _placeId;
 
       // Call the createNewPost function
@@ -143,18 +163,20 @@ class _MyWidgetState extends State<MyWidget> {
         productImage: productImage,
         newQuantity: newQuantity,
         oldQuantity: oldQuantity,
-        storePlaceId: storePlaceId
+        storePlaceId: storePlaceId,
       );
 
       // If execution reaches this point, it means the function call was successful
       print('createNewPost function called successfully');
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomePage()));
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     } catch (error) {
       // Handle any errors that occur during the function call
       print('Error calling createNewPost function: $error');
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomePage()));
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     }
   }
 
