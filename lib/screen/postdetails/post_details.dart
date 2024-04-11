@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import '../../constant.dart';
+import '../../services/commentservice.dart';
 import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -389,16 +390,33 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ),
 
         SizedBox(width: 10),
+        // IconButton(
+        //   onPressed: () {
+        //     setState(() {
+        //       if (_commentController.text.isNotEmpty) {
+        //         comments.add(_commentController.text); // Add the comment to the list
+        //         _commentController.clear(); // Clear the comment text field
+        //       }
+        //     });
+        //   },
+        //   icon: Icon(Icons.send,color: kPrimaryColor), // Send icon
+        // ),
         IconButton(
-          onPressed: () {
-            setState(() {
-              if (_commentController.text.isNotEmpty) {
-                comments.add(_commentController.text); // Add the comment to the list
-                _commentController.clear(); // Clear the comment text field
+          onPressed: () async {
+            if (_commentController.text.isNotEmpty) {
+              try {
+                await CommentService.createComment(widget.post.userId,widget.post.id, _commentController.text);
+                setState(() {
+                  comments.add(_commentController.text);
+                  _commentController.clear();
+                });
+              } catch (error) {
+                print('Failed to add comment: $error');
+                // Handle error here
               }
-            });
+            }
           },
-          icon: Icon(Icons.send,color: kPrimaryColor), // Send icon
+          icon: Icon(Icons.send, color: kPrimaryColor),
         ),
       ],
     );

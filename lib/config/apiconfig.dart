@@ -14,4 +14,8 @@ class ApiConfig {
   static const String baseUrlPost = 'http://10.0.2.2:3001/api';
   static const String getPostEndpoint = '/post/allpost';
   static const String deletePostEndpoint ='/post';
+
+  //Comment Service
+  static const String baseUrlComment = 'http://10.0.2.2:3004/api';
+  static const String addCommentEndpoint ='/comment';
 }
