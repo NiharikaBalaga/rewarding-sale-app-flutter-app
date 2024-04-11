@@ -124,6 +124,7 @@ class _RewardPageState extends State<RewardPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
+        automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),

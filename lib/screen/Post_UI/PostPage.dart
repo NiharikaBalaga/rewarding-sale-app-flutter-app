@@ -18,6 +18,7 @@ class PostPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
+        automaticallyImplyLeading: false,
         title: const Text(
           'Add Product',
           style: TextStyle(color: Colors.white, fontSize: 18),
@@ -27,23 +28,6 @@ class PostPage extends StatelessWidget {
         iconTheme: IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),
-        // actions: [
-        //   // Add Post button to AppBar
-        //   TextButton(
-        //     onPressed: ()  {
-        //       print('Post button pressed');
-        //
-        //     },
-        //     child: Text(
-        //       'Post',
-        //       style: TextStyle(
-        //         color: Colors.white,
-        //         fontSize: 20,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),
-        // ],
       ),
       body: MyWidget(),
       bottomNavigationBar: BottomNavigationBar(

@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
-import '../../models/Post.dart';
+import '../../models/Post.dart'; // Import the updated Post model
 import '../../services/getpostservice.dart';
 import '../reward/reward.dart';
 import 'package:geocoding/geocoding.dart';
 import '../user_profile/user_profile.dart';
 import '../../services/getcurrentuserservice.dart';
+import '../../services/postapiservices.dart';
 import '../../models/CurrentUser.dart';
-
 
 class MyPostPage extends StatefulWidget {
   MyPostPage({Key? key}) : super(key: key);
@@ -20,11 +20,14 @@ class MyPostPage extends StatefulWidget {
 }
 
 class _MyPostPageState extends State<MyPostPage> {
-  List<String> activePosts = [];
-  List<String> inactivePosts = [];
+  List<Post> activePosts = [];
+  List<Post> inactivePosts = [];
 
   String userName = '';
   String location = '';
+  String editedProductName = '';
+  double editedNewPrice = 0.0;
+  int editedNewQuantity = 0;
 
   @override
   void initState() {
@@ -55,44 +58,23 @@ class _MyPostPageState extends State<MyPostPage> {
       DateTime currentDate = DateTime.now();
 
       // Filter active posts based on the condition
-      List<Post> activeFilteredPosts = fetchedPosts.where((post) {
+      activePosts = fetchedPosts.where((post) {
         return currentDate.difference(post.createdAt).inDays <= 30;
       }).toList();
 
       // Filter inactive posts based on the condition
-      List<Post> inactiveFilteredPosts = fetchedPosts.where((post) {
+      inactivePosts = fetchedPosts.where((post) {
         return currentDate.difference(post.createdAt).inDays > 30;
       }).toList();
 
-      // Extract product names from active filtered posts
-      List<String> activeProductNames = activeFilteredPosts.map((post) {
-        List<String> words = post.productName.split(' ');
-        return words.length >= 2 ? '${words[0]} ${words[1]}' : post.productName;
-      }).toList();
-
-      // Update active posts state
+      // Set state to update UI
       setState(() {
-        activePosts = activeProductNames;
       });
 
-      // Check if there are any inactive posts more than one month old
-      if (inactiveFilteredPosts.isNotEmpty) {
-        // Display inactive posts
-        setState(() {
-          inactivePosts = inactiveFilteredPosts.map((post) => post.productName).toList();
-        });
-      } else {
-        // Display message for no inactive posts
-        setState(() {
-          inactivePosts = ['No posts more than 1 month old'];
-        });
-      }
     } catch (error) {
       print('Error fetching posts: $error');
     }
   }
-
-
 
   Future<void> getUserLocation(double latitude, double longitude) async {
     try {
@@ -112,6 +94,22 @@ class _MyPostPageState extends State<MyPostPage> {
     }
   }
 
+  // Widget buildActivePostsTable(BuildContext context) {
+  //   return buildTable(
+  //     activePosts,
+  //     context,
+  //     showEditButton: true,
+  //     showDeleteButton: true,
+  //   );
+  // }
+  //
+  // Widget buildInactivePostsTable(BuildContext context) {
+  //   return buildTable(
+  //     inactivePosts,
+  //     context,
+  //     showDeleteButton: true,
+  //   );
+  // }
 
   Widget buildActivePostsTable(BuildContext context) {
     //return buildTable(activePosts, context, showEditButton: true, showDeleteButton: true);
@@ -119,7 +117,11 @@ class _MyPostPageState extends State<MyPostPage> {
 
     if (!hasActivePosts) {
       return Center(
-        child: Text('No active posts available for display'),
+        child: Text('No active posts available for display',
+          style: TextStyle(
+              fontSize: 16, color: Colors.red
+          ),
+        ),
       );
     }
 
@@ -130,11 +132,22 @@ class _MyPostPageState extends State<MyPostPage> {
       showDeleteButton: hasActivePosts,
     );
   }
-
   Widget buildInactivePostsTable(BuildContext context) {
-    //return buildTable(inactivePosts, context, showDeleteButton: true);
+    // Check if there are any inactive posts
     bool hasInactivePosts = inactivePosts.isNotEmpty && inactivePosts[0] != 'No posts more than 1 month old';
 
+    if (!hasInactivePosts) {
+      return Center(
+        child: Text('No inactive posts available for display',
+          style: TextStyle(
+              fontSize: 16,
+              color: Colors.red
+          ),
+        ),
+      );
+    }
+
+    // Display the table with inactive posts
     return buildTable(
       inactivePosts,
       context,
@@ -142,7 +155,8 @@ class _MyPostPageState extends State<MyPostPage> {
     );
   }
 
-  Widget buildTable(List<String> posts, BuildContext context, {bool showEditButton = false, bool showDeleteButton = false}) {
+  Widget buildTable(List<Post> posts, BuildContext context,
+      {bool showEditButton = false, bool showDeleteButton = false}) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -156,34 +170,37 @@ class _MyPostPageState extends State<MyPostPage> {
           ),
         ],
       ),
-      width: MediaQuery.of(context).size.width * 1, // Adjust width to 100% of screen width
+      width: MediaQuery.of(context).size.width * 1,
       child: DataTable(
         columnSpacing: 120,
-        headingRowHeight: 50, // Adjust header row height
-        dataRowHeight: 70, // Adjust data row height
-        headingTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 17), // Color for header text
-        headingRowColor: MaterialStateColor.resolveWith((states) => kPrimaryColor.withOpacity(0.9)), // Background color for header row
+        headingRowHeight: 60,
+        dataRowHeight: 70,
+        headingTextStyle: TextStyle(
+            fontWeight: FontWeight.bold, color: Colors.white, fontSize: 17),
+        headingRowColor:
+        MaterialStateColor.resolveWith((states) => kPrimaryColor.withOpacity(0.9)),
         columns: [
           DataColumn(label: Text('Post Name')),
           DataColumn(label: Text('Actions')),
         ],
         rows: posts.map((post) {
           return DataRow(cells: [
-            DataCell(Text(post)),
+            DataCell(Text(
+              '${post.productName.split(' ').take(2).join(' ')}',
+            )),
             DataCell(
               Row(
                 children: [
-                  if (showEditButton) // Conditionally render edit button based on showEditButton flag
+                  if (showEditButton)
                     IconButton(
-                      icon: Icon(Icons.edit, color: Colors.green), // Change color of edit icon to green
+                      icon: Icon(Icons.edit, color: Colors.green),
                       onPressed: () {
-                        // Implement action for editing post
-
+                        _editPost(context, post);
                       },
                     ),
-                  if (showDeleteButton) // Conditionally render delete button based on showDeleteButton flag
+                  if (showDeleteButton)
                     IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red), // Change color of delete icon to red
+                      icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
                         // Show confirmation dialog before deleting the post
                         showDialog(
@@ -191,20 +208,41 @@ class _MyPostPageState extends State<MyPostPage> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text("Confirmation"),
-                              content: Text("Are you sure you want to delete this post \"$post\"?"),
+                              content: Text(
+                                  "Are you sure you want to delete this post \"${post.productName}\"?"),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.of(context).pop(); // Close the dialog
+                                    Navigator.of(context).pop();
                                   },
                                   child: Text("Cancel"),
                                 ),
                                 TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      posts.remove(post);
-                                    });
-                                    Navigator.of(context).pop(); // Close the dialog
+                                  onPressed: () async {
+                                    bool deleted = await PostApiService.deletePost(post.id);
+                                    if (deleted) {
+                                      setState(() {
+                                        posts.remove(post.id);
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Colors.green,
+                                          content: Text('Post deleted successfully'),
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Colors.red,
+                                          content: Text('Failed to delete post'),
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    }
+                                    Navigator.of(context).pop();
                                   },
                                   child: Text("Yes"),
                                 ),
@@ -222,6 +260,7 @@ class _MyPostPageState extends State<MyPostPage> {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +288,6 @@ class _MyPostPageState extends State<MyPostPage> {
                   letterSpacing: 1.2,
                 ),
               ),
-
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(right: 5.0),
@@ -263,9 +301,7 @@ class _MyPostPageState extends State<MyPostPage> {
                     letterSpacing: 1.2,
                   ),
                 ),
-
               ),
-
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -392,6 +428,75 @@ class _MyPostPageState extends State<MyPostPage> {
   }
 }
 
+void _editPost(BuildContext context, Post post) {
+  String editedProductName = post.productName;
+  double editedNewPrice = post.newPrice;
+  int editedNewQuantity = post.newQuantity;
 
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Edit Post"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    initialValue: post.productName,
+                    maxLines: null, // Allow multiple lines
+                    decoration: InputDecoration(labelText: 'Product Name'),
+                    onChanged: (value) {
+                      editedProductName = value;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            TextFormField(
+              initialValue: post.newPrice.toString(),
+              decoration: InputDecoration(labelText: 'New Price'),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                editedNewPrice = double.tryParse(value) ?? 0.0;
+              },
+            ),
+            TextFormField(
+              initialValue: post.newQuantity.toString(),
+              decoration: InputDecoration(labelText: 'New Quantity'),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                editedNewQuantity = int.tryParse(value) ?? 0;
+              },
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              // Perform update operation with edited values
+              // For demonstration, just print the edited values
+              print('Edited Product Name: $editedProductName');
+              print('Edited New Price: $editedNewPrice');
+              print('Edited New Quantity: $editedNewQuantity');
 
+              // Close the dialog
+              Navigator.of(context).pop();
+            },
+            child: Text("Confirm"),
+          ),
+        ],
+      );
+    },
+  );
+}
 

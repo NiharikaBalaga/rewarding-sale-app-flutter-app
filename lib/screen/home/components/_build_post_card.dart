@@ -89,14 +89,14 @@ class _PostCardState extends State<PostCard> {
                         count: _viewCount,
                       ),
 
-                      _buildIconButton(
-                        icon: FontAwesomeIcons.share,
-                        color: kPrimaryColor,
-                        onPressed: () {
-                          // Add share functionality here
-                        },
-                        count: 15,
-                      ),
+                      // _buildIconButton(
+                      //   icon: FontAwesomeIcons.share,
+                      //   color: kPrimaryColor,
+                      //   onPressed: () {
+                      //     // Add share functionality here
+                      //   },
+                      //   count: 15,
+                      // ),
                     ],
                   ),
                 ),

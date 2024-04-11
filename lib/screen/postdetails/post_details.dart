@@ -76,12 +76,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 items: [
                   Image.network(
                     widget.post.productImageObjectUrl,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     width: double.infinity,
                   ),
                   Image.network(
                     widget.post.priceTagImageObjectUrl,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     width: double.infinity,
                   ),
                   // Add more images if needed

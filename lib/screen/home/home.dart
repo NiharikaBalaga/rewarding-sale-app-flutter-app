@@ -86,6 +86,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
+        automaticallyImplyLeading: false,
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
