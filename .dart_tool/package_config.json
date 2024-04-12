@@ -218,6 +218,12 @@
       "languageVersion": "2.15"
     },
     {
+      "name": "google_places_flutter",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/google_places_flutter-2.0.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "http",
       "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.6",
       "packageUri": "lib/",
@@ -294,6 +300,24 @@
       "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/lints-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "location",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/location-5.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "location_platform_interface",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/location_platform_interface-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "location_web",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/location_web-4.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "matcher",
@@ -386,6 +410,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "rxdart",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/rxdart-0.27.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///C:/Users/porko/Downloads/flutter_windows_3.16.5-stable/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -476,7 +506,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-04-03T20:56:20.863778Z",
+  "generated": "2024-04-12T02:20:22.259828Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }

@@ -8,6 +8,7 @@ class ApiConfig {
   static const String userLocationEndpoint = '/auth/user/location';
   static const String refreshTokenEndpoint = '/auth/token/refresh';
   static const String signupUserEndpoint ='/auth/user/signup';
+  static const String updateUserEndpoint ='/auth/user';
 
   // Post Service
   static const String baseUrlPost = 'http://10.0.2.2:3001/api';

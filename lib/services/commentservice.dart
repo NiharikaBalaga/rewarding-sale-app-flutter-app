@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
+import 'package:http/http.dart' as http;
+import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageService.dart';
 import '../config/apiconfig.dart';
 
 class CommentService {
@@ -8,8 +9,16 @@ class CommentService {
     try {
       final String apiUrl = '${ApiConfig.baseUrlComment}${ApiConfig.addCommentEndpoint}'; // Adjust the API endpoint
 
+      final secureStorageService = SecureStorageService();
+      final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
+
+      if (accessToken == null) {
+        throw Exception('Access token not available');
+      }
+
       final Map<String, String> headers = {
         'Content-Type': 'application/json', // Specify content type as JSON
+        'Authorization': 'Bearer $accessToken', // Add the access token to the headers
       };
 
       final Map<String, dynamic> requestBody = {

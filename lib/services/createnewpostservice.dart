@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -6,7 +7,7 @@ import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageSer
 import '../config/apiconfig.dart';
 
 class NewPostService {
-  static Future<void> createNewPost({
+  static Future<String?> createNewPost({
     required String productName,
     required double oldPrice,
     required double newPrice,
@@ -82,8 +83,12 @@ class NewPostService {
 
       if (response.statusCode == 201) {
         print('New post created successfully');
+        return null; // Return null if post creation is successful
       } else {
-        throw Exception('Failed to create new post: ${response.statusCode}');
+        // Parse postDeclinedReason from response body
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        final postDeclinedReason = responseBody['postDeclinedReason'];
+        return postDeclinedReason; // Return postDeclinedReason if creation fails
       }
     } catch (error) {
       throw Exception('Failed to create new post: $error');

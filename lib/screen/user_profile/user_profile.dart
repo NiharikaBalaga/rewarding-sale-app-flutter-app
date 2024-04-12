@@ -5,8 +5,9 @@ import 'dart:io';
 
 import '../../constant.dart';
 import '../../models/CurrentUser.dart';
+import '../../services/api_services/auth.dart';
+import '../../services/editcurrentuser.dart';
 import '../../services/getcurrentuserservice.dart';
-import '../../services/logoutuserservice.dart';
 import '../MyPost_UI/my_post_ui.dart';
 import '../login/components/_body.dart';
 import 'favoritePostsPage.dart';
@@ -47,6 +48,7 @@ class _UserProfileState extends State<UserProfile> {
   late File _image;
   late String userName = ''; // Variable to store user's full name
   late String email = '';
+  late String phoneNumber ='';
 
   @override
   void initState() {
@@ -63,6 +65,7 @@ class _UserProfileState extends State<UserProfile> {
       setState(() {
         userName = '${_capitalizeFirstLetter(currentUser.firstName)} ${_capitalizeFirstLetter(currentUser.lastName)}';
         email = '${currentUser.email}';
+        phoneNumber ='${currentUser.phoneNumber}';
       });
     } catch (error) {
       print('Error fetching current user: $error');
@@ -85,13 +88,13 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void _editProfile() {
+    String editedFirstName = userName.split(' ')[0];
+    String editedLastName = userName.split(' ')[1];
+    String editedEmail = email;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String editedFirstName = userName.split(' ')[0];
-        String editedLastName = userName.split(' ')[1];
-        String editedEmail = email;
-
         return AlertDialog(
           title: Text('Edit Profile'),
           content: Column(
@@ -102,13 +105,6 @@ class _UserProfileState extends State<UserProfile> {
                 controller: TextEditingController(text: editedFirstName),
                 onChanged: (value) {
                   editedFirstName = value;
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Last Name'),
-                controller: TextEditingController(text: editedLastName),
-                onChanged: (value) {
-                  editedLastName = value;
                 },
               ),
               TextField(
@@ -129,12 +125,41 @@ class _UserProfileState extends State<UserProfile> {
             ),
             TextButton(
               child: Text('Save'),
-              onPressed: () {
-                setState(() {
-                  userName = '$editedFirstName $editedLastName';
-                  email = editedEmail;
-                });
-                Navigator.of(context).pop();
+              onPressed: () async {
+                final UserProfileService _userProfileService = UserProfileService();
+                // Call the updateProfile method from UserProfileService
+                final result = await _userProfileService.updateProfile(editedFirstName, editedEmail);
+                if (result['success']) {
+                  // Update the UI or show a message indicating success
+                  setState(() {
+                    userName = '$editedFirstName $editedLastName';
+                    email = editedEmail;
+                  });
+                  Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('User profile updated successfully'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  // Handle error if the update failed
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Failed to update profile: ${result['error']}'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -142,6 +167,7 @@ class _UserProfileState extends State<UserProfile> {
       },
     );
   }
+
 
   Future<void> _showLogoutConfirmationDialog(BuildContext context) async {
     return showDialog<void>(
@@ -168,7 +194,8 @@ class _UserProfileState extends State<UserProfile> {
               child: Text('Logout'),
               onPressed: () async {
                 // Call your logout API service here
-                bool success = await LogoutApiService().logout();
+                AuthService authservice = AuthService();
+                bool success = await authservice.logoutUser();
                 if (success) {
                   // After logout, navigate to the home page
                   Navigator.of(context).pushAndRemoveUntil(
@@ -188,13 +215,6 @@ class _UserProfileState extends State<UserProfile> {
           ],
         );
       },
-    );
-  }
-
-  void _navigateToFavoritePostsPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => FavoritePostsPage()),
     );
   }
 
@@ -239,7 +259,7 @@ class _UserProfileState extends State<UserProfile> {
           ),
           SizedBox(height: 10),
           Text(
-            loginController.phoneNumber.value, // Replace this with the user's phone number
+            phoneNumber.isNotEmpty ? phoneNumber : 'Loading...',// Replace this with the user's phone number
             style: TextStyle(fontSize: 16),
           ),
           SizedBox(height: 10),

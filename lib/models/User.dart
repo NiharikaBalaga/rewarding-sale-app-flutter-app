@@ -3,6 +3,7 @@ class User {
   final String lastName;
   final String email;
 
+
   User({
     required this.firstName,
     required this.lastName,

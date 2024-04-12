@@ -49,7 +49,10 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         userName = '$lastName';
       });
+      // double lastlatitude = -80.579977;
+      // double lastlongitude = 43.445395;
       await getUserLocation(
+
           currentUser.lastLatitude, currentUser.lastLongitude);
     } catch (error) {
       print('Error fetching current user: $error');
@@ -62,6 +65,7 @@ class _HomePageState extends State<HomePage> {
       await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
+        print(place);
         String address = '${place.street}';
         setState(() {
           userLocation = address;

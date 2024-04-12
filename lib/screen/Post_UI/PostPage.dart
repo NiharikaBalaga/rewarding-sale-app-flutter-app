@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +9,6 @@ import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../services/createnewpostservice.dart';
-import '../../services/getplaceidservice.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -108,7 +105,8 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
   String? _placeId;
-  // String placeId = 'ChIJTa2TPvn2K4gRiHG331ctW2I';
+  bool _isLoading = false;
+
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
   TextEditingController _productDescriptionController = TextEditingController();
@@ -159,7 +157,7 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
-  // Inside your widget or wherever you want to call the service function
+  // // Inside your widget or wherever you want to call the service function
   void _callCreateNewPostService() async {
     try {
       print('placeId: ${_placeId}');
@@ -192,8 +190,8 @@ class _MyWidgetState extends State<MyWidget> {
 
       File priceTagImage = _image1!;
       File productImage = _image!;
-      int newQuantity = int.parse(_newQuantityController.text);
-      int oldQuantity = int.parse(_oldQuantityController.text);
+      // int newQuantity = int.parse(_newQuantityController.text);
+      // int oldQuantity = int.parse(_oldQuantityController.text);
       String storePlaceId = _placeId!;
 
       // Call the createNewPost function
