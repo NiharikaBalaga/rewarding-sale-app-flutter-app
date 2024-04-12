@@ -19,4 +19,8 @@ class ApiConfig {
   //Comment Service
   static const String baseUrlComment = 'http://10.0.2.2:3004/api';
   static const String addCommentEndpoint ='/comment';
+
+  //Report Service
+  static const String baseUrlReport = 'http://10.0.2.2:3007/api';
+  static const String getReportEndpoint ='/report';
 }

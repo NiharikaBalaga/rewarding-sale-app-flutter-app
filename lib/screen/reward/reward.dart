@@ -223,6 +223,7 @@ class _RewardPageState extends State<RewardPage> {
         backgroundColor: kPrimaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
+        currentIndex: 2,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

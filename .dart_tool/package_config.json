@@ -416,6 +416,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "share",
+      "rootUri": "file:///C:/Users/porko/AppData/Local/Pub/Cache/hosted/pub.dev/share-2.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///C:/Users/porko/Downloads/flutter_windows_3.16.5-stable/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -506,7 +512,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-04-12T02:20:22.259828Z",
+  "generated": "2024-04-12T22:41:42.336173Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }

@@ -53,6 +53,7 @@ class PostPage extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: const TextStyle(color: Colors.white),
         unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        currentIndex: 1,
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -105,7 +106,6 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
   String? _placeId;
-  bool _isLoading = false;
 
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
@@ -549,15 +549,28 @@ class _MyWidgetState extends State<MyWidget> {
 
   placesAutoCompleteTextField() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: 65,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey, width: 0.5), // Add border color and width
+        borderRadius: BorderRadius.circular(7.0), // Add border radius
+      ),
+
+      padding: const EdgeInsets.symmetric(horizontal: 0),
+
       child: GooglePlaceAutoCompleteTextField(
+
         textEditingController: _locationController,
         googleAPIKey: 'AIzaSyDBvFOnu4xQhn3EprY9llKqnfOkZkVw6ms',
+
         inputDecoration: const InputDecoration(
-          hintText: "Select Store",
+          hintText: "Search for a store",
+          hintStyle: TextStyle(color: Colors.grey), // Update hint text color
           border: InputBorder.none,
-          enabledBorder: InputBorder.none,
+          contentPadding: EdgeInsets.fromLTRB(10, 15, 15, 10), // Adjust content padding for left alignment and height
+          prefixIcon: Icon(Icons.location_on, color: kPrimaryColor, size: 35), // Add location icon
+          alignLabelWithHint: true, // Align label with the hint text
         ),
+
         debounceTime: 400,
         countries: const ['ca'],
         getPlaceDetailWithLatLng: (Prediction prediction) {

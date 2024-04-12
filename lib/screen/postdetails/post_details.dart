@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../constant.dart';
 import '../../services/commentservice.dart';
+import '../../services/reportservice.dart';
 import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:share/share.dart';
+
 
 
 class PostDetailPage extends StatefulWidget {
@@ -19,13 +23,13 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   int upvoteCount = 0;
   int _currentImageIndex = 0;
-  bool _isNewPriceConfirmed = false;
-  bool _isOldPriceConfirmed = false;
   late List<String> comments; // List to store comments
   bool _isEditing = false;
   late int _editIndex;
   late TextEditingController _editController;
   late TextEditingController _commentController;
+  bool _isButtonConfirmed = false;
+  String _confirmationMessage = '';
 
   @override
   void initState() {
@@ -49,9 +53,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.share), // Add the share icon
+            icon: Icon(Icons.share),
             onPressed: () {
-              // Implement the share functionality here
+              final RenderBox box = context.findRenderObject() as RenderBox;
+              Share.share(
+                'Check out this post: ${widget.post.productName}\n\n${widget.post.productImageObjectUrl}',
+                subject: 'Post Details',
+                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+              );
             },
           ),
         ],
@@ -157,23 +166,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           '${widget.post.newPrice}',
                           style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                         ),
-                        SizedBox(width: 170),
-                        Text(
-                          'Confirm',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto', color: _isNewPriceConfirmed ? Colors.green : Colors.blueGrey),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            _isNewPriceConfirmed ? Icons.check_circle : Icons.radio_button_unchecked,
-                            color: _isNewPriceConfirmed ? Colors.green : Colors.blueGrey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isNewPriceConfirmed = !_isNewPriceConfirmed;
-                            });
-                            print('New Price Confirmed: $_isNewPriceConfirmed');
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -187,23 +179,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         Text(
                           '${widget.post.oldPrice}',
                           style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
-                        ),
-                        SizedBox(width: 170),
-                        Text(
-                          'Confirm',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto', color: _isOldPriceConfirmed ? Colors.green : Colors.blueGrey),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            _isOldPriceConfirmed ? Icons.check_circle : Icons.radio_button_unchecked,
-                            color: _isOldPriceConfirmed ? Colors.green : Colors.blueGrey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isOldPriceConfirmed = !_isOldPriceConfirmed;
-                            });
-                            print('Old Price Confirmed: $_isOldPriceConfirmed');
-                          },
                         ),
                       ],
                     ),
@@ -226,6 +201,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     subtitle: Text(
                       '${widget.post.oldQuantity}',
                       style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                    ),
+                  ),
+                 // _buildConfirmButton(),
+                  Center( // Wrap the button with Center widget
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildConfirmButton(),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -363,6 +347,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
               MaterialPageRoute(builder: (context) => HomePage()),
             );
           }
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RewardPage()),
+            );
+          }
         },
       ),
     );
@@ -390,17 +380,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
         ),
 
         SizedBox(width: 10),
-        // IconButton(
-        //   onPressed: () {
-        //     setState(() {
-        //       if (_commentController.text.isNotEmpty) {
-        //         comments.add(_commentController.text); // Add the comment to the list
-        //         _commentController.clear(); // Clear the comment text field
-        //       }
-        //     });
-        //   },
-        //   icon: Icon(Icons.send,color: kPrimaryColor), // Send icon
-        // ),
         IconButton(
           onPressed: () async {
             if (_commentController.text.isNotEmpty) {
@@ -432,34 +411,34 @@ class _PostDetailPageState extends State<PostDetailPage> {
           builder: (BuildContext context, setState) {
             return AlertDialog(
               backgroundColor: Colors.white,
-              title: Text("Select Reason"),
+              title: Text("Select Reason",style: TextStyle(fontSize: 20, color: kPrimaryColor)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    title: Text("Out of stock"),
-                    tileColor: selectedOption == 'Out of stock' ? Colors.grey.withOpacity(0.3) : null,
+                    title: Text("OUT_OF_STOCK"),
+                    tileColor: selectedOption == 'OUT_OF_STOCK' ? Colors.grey.withOpacity(0.3) : null,
                     onTap: () {
                       setState(() {
-                        selectedOption = 'Out of stock'; // Set selected option
+                        selectedOption = 'OUT_OF_STOCK'; // Set selected option
                       });
                     },
                   ),
                   ListTile(
-                    title: Text("Misleading"),
-                    tileColor: selectedOption == 'Misleading' ? Colors.grey.withOpacity(0.3) : null,
+                    title: Text("MISLEADING"),
+                    tileColor: selectedOption == 'MISLEADING' ? Colors.grey.withOpacity(0.3) : null,
                     onTap: () {
                       setState(() {
-                        selectedOption = 'Misleading'; // Set selected option
+                        selectedOption = 'MISLEADING'; // Set selected option
                       });
                     },
                   ),
                   ListTile(
-                    title: Text("Not Found"),
-                    tileColor: selectedOption == 'Not Found' ? Colors.grey.withOpacity(0.3) : null,
+                    title: Text("NOT_FOUND"),
+                    tileColor: selectedOption == 'NOT_FOUND' ? Colors.grey.withOpacity(0.3) : null,
                     onTap: () {
                       setState(() {
-                        selectedOption = 'Not Found'; // Set selected option
+                        selectedOption = 'NOT_FOUND'; // Set selected option
                       });
                     },
                   ),
@@ -479,6 +458,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     // Print selected option and handle confirmation
                     print('Selected option: $selectedOption');
                     Navigator.of(context).pop(); // Close dialog
+                    // Pass the selected report type to the report service
+                    ReportService.fetchReport(widget.post.id, selectedOption);
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => HomePage()),
                     ); // Redirect to home page
@@ -492,7 +473,37 @@ class _PostDetailPageState extends State<PostDetailPage> {
       },
     );
   }
+  // Function to handle the button press
+  void _handleConfirmButtonPress() {
+    setState(() {
+      // Toggle confirmation status
+      _isButtonConfirmed = !_isButtonConfirmed;
+      if (_isButtonConfirmed) {
+        // Store confirmation message if button is confirmed
+        _confirmationMessage = 'CONFIRMATION';
+        print(_confirmationMessage);
+        ReportService.fetchReport(widget.post.id, _confirmationMessage);
+      }
+    });
+  }
 
+  Widget _buildConfirmButton() {
+    return TextButton(
+      onPressed: _handleConfirmButtonPress,
+      style: TextButton.styleFrom(
+        backgroundColor: _isButtonConfirmed ? Colors.green : Colors.grey,
+        padding: EdgeInsets.symmetric(horizontal: 56, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Text(
+        'Confirm',
+        style: TextStyle(fontSize: 16, fontFamily: 'Roboto', color: Colors.white),
+      ),
+    );
+  }
+}
   void _showFlyingAnimation(BuildContext context) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final position = renderBox.localToGlobal(Offset.zero);
@@ -520,4 +531,5 @@ class _PostDetailPageState extends State<PostDetailPage> {
       entry.remove();
     });
   }
-}
+
+

@@ -188,7 +188,7 @@ class _PostCardState extends State<PostCard> {
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(width: 150),
+              const SizedBox(width: 140),
               Text(
                 post.postCategory.split(' ').take(2).join(' '),
                 style: const TextStyle(
