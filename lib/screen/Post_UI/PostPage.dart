@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:google_places_flutter/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../services/createnewpostservice.dart';
 import '../../services/getplaceidservice.dart';
-import '../../services/updateuserlocation.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -25,27 +28,44 @@ class PostPage extends StatelessWidget {
         ),
         centerTitle: true,
         elevation: 2,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),
+        // actions: [
+        //   // Add Post button to AppBar
+        //   TextButton(
+        //     onPressed: ()  {
+        //       print('Post button pressed');
+        //
+        //     },
+        //     child: Text(
+        //       'Post',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: MyWidget(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: kPrimaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
-        selectedLabelStyle: TextStyle(color: Colors.white),
-        unselectedLabelStyle: TextStyle(color: Colors.grey),
+        selectedLabelStyle: const TextStyle(color: Colors.white),
+        unselectedLabelStyle: const TextStyle(color: Colors.grey),
         items: [
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.add),
             label: 'Post',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.star),
             label: 'Rewards',
           ),
@@ -60,13 +80,13 @@ class PostPage extends StatelessWidget {
           if (index == 1) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PostPage()),
+              MaterialPageRoute(builder: (context) => const PostPage()),
             );
           }
           if (index == 0) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }
         },
@@ -84,10 +104,10 @@ class MyWidget extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MyWidget> {
+
   File? _image;
   File? _image1;
-  String? _location;
-  late String _placeId;
+  String? _placeId;
   // String placeId = 'ChIJTa2TPvn2K4gRiHG331ctW2I';
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
@@ -97,6 +117,25 @@ class _MyWidgetState extends State<MyWidget> {
   TextEditingController _oldPriceController = TextEditingController();
   TextEditingController _newPriceController = TextEditingController();
 
+  void _handleLocationPick(String placeId) {
+    print('plaecId-state - ${placeId}');
+    setState(() {
+      _placeId = placeId;
+      print('plaecId-state - ${placeId}');
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+
+  // Function to handle place selection
   Future<void> _getProductImage() async {
     final pickedFile =
     await ImagePicker().pickImage(source: ImageSource.camera);
@@ -110,8 +149,7 @@ class _MyWidgetState extends State<MyWidget> {
   }
 
   Future<void> _getPriceTagImage() async {
-    final pickedFile1 =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedFile1 = await ImagePicker().pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedFile1 != null) {
@@ -121,8 +159,10 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
+  // Inside your widget or wherever you want to call the service function
   void _callCreateNewPostService() async {
     try {
+      print('placeId: ${_placeId}');
       // Extract values from TextControllers
       String productName = _productNameController.text.trim();
       String productDescription = _productDescriptionController.text.trim();
@@ -152,7 +192,9 @@ class _MyWidgetState extends State<MyWidget> {
 
       File priceTagImage = _image1!;
       File productImage = _image!;
-      String storePlaceId = _placeId;
+      int newQuantity = int.parse(_newQuantityController.text);
+      int oldQuantity = int.parse(_oldQuantityController.text);
+      String storePlaceId = _placeId!;
 
       // Call the createNewPost function
       await NewPostService.createNewPost(
@@ -163,58 +205,21 @@ class _MyWidgetState extends State<MyWidget> {
         productImage: productImage,
         newQuantity: newQuantity,
         oldQuantity: oldQuantity,
-        storePlaceId: storePlaceId,
+        storePlaceId: storePlaceId
       );
 
       // If execution reaches this point, it means the function call was successful
       print('createNewPost function called successfully');
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+          MaterialPageRoute(builder: (context) => const HomePage()));
     } catch (error) {
       // Handle any errors that occur during the function call
       print('Error calling createNewPost function: $error');
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+          MaterialPageRoute(builder: (context) => const HomePage()));
     }
   }
 
-  void _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      // double latitude = position.latitude;
-      // double longitude = position.longitude;
-
-      double latitude = 43.445395;
-      double longitude = -80.579977;
-
-      String placeId = await getPlaceId(latitude, longitude);
-      print('Place ID: $placeId');
-
-      await LocationService.updateUserLocation(latitude, longitude);
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-      String currentLocation = (placemarks[0].street ?? '') + ', ' + (placemarks[0].locality ?? '');
-
-      String location = currentLocation.isEmpty ? 'Unknown' : currentLocation;
-      setState(() {
-        _location = location;
-        _locationController.text = _location ?? '';
-        _placeId = placeId;
-      });
-
-      print('User location: $_location');
-      print('latitude: $latitude');
-      print('longitude: $longitude');
-
-      print('Place ID from func: $placeId');
-    } catch (e) {
-      print('Error fetching location: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,41 +230,17 @@ class _MyWidgetState extends State<MyWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              height: 16,
-            ),
-            SizedBox(
               height: 70,
-              child: TextField(
-                controller: _locationController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.5),
-                    borderRadius: BorderRadius.circular(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: placesAutoCompleteTextField()
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: kPrimaryColor),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.place_rounded,
-                      color: kPrimaryColor,
-                      size: 32,
-                    ),
-                    onPressed: () {
-                      _getCurrentLocation();
-                      // placeAutoComplete("Dubai");
-                    },
-                  ),
-                  labelText: "Get Your Current location",
-                  labelStyle: TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white12,
-                ),
+                ],
               ),
             ),
-            SizedBox(
-              height: 25,
+            const SizedBox(
+              height: 16,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -315,7 +296,7 @@ class _MyWidgetState extends State<MyWidget> {
                     ],
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     children: [
@@ -369,33 +350,33 @@ class _MyWidgetState extends State<MyWidget> {
                 ),
               ],
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             SizedBox(
               height: 70,
               child: TextField(
                 controller: _productNameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.5),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: kPrimaryColor),
+                    borderSide: const BorderSide(color: kPrimaryColor),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  suffixIcon: Icon(
+                  suffixIcon: const Icon(
                     Icons.local_offer,
                     color: kPrimaryColor,
                     size: 30,
                   ),
                   labelText: "Enter Product Name",
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: const TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white12,
                 ),
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             SizedBox(
               height: 100,
               child: TextField(
@@ -403,26 +384,26 @@ class _MyWidgetState extends State<MyWidget> {
                 maxLines: 3,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.5),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: kPrimaryColor),
+                    borderSide: const BorderSide(color: kPrimaryColor),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  suffixIcon: Icon(
+                  suffixIcon: const Icon(
                     Icons.description_outlined,
                     color: kPrimaryColor,
                     size: 30,
                   ),
                   labelText: "Enter Product Description",
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: const TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white12,
                 ),
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             SizedBox(
               height: 70,
               child: Row(
@@ -433,44 +414,44 @@ class _MyWidgetState extends State<MyWidget> {
                       controller: _oldQuantityController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderSide: const BorderSide(color: kPrimaryColor),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        suffixIcon: Icon(
+                        suffixIcon: const Icon(
                           Icons.production_quantity_limits_rounded,
                           color: kPrimaryColor,
                         ),
                         labelText: "Old Quantity",
-                        labelStyle: TextStyle(color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white12,
                       ),
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Flexible(
                     child: TextField(
                       controller: _newQuantityController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderSide: const BorderSide(color: kPrimaryColor),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        suffixIcon: Icon(
+                        suffixIcon: const Icon(
                           Icons.production_quantity_limits_outlined,
                           color: kPrimaryColor,
                         ),
                         labelText: "New Quantity",
-                        labelStyle: TextStyle(color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white12,
                       ),
@@ -480,7 +461,7 @@ class _MyWidgetState extends State<MyWidget> {
                 ],
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             SizedBox(
               height: 70,
               child: Row(
@@ -491,44 +472,44 @@ class _MyWidgetState extends State<MyWidget> {
                       controller: _oldPriceController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderSide: const BorderSide(color: kPrimaryColor),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        suffixIcon: Icon(
+                        suffixIcon: const Icon(
                           Icons.price_change,
                           color: kPrimaryColor,
                         ),
                         labelText: "Old Price",
-                        labelStyle: TextStyle(color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white12,
                       ),
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Flexible(
                     child: TextField(
                       controller: _newPriceController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 0.5),
+                          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: kPrimaryColor),
+                          borderSide: const BorderSide(color: kPrimaryColor),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        suffixIcon: Icon(
+                        suffixIcon: const Icon(
                           Icons.price_change_outlined,
                           color: kPrimaryColor,
                         ),
                         labelText: "New Price",
-                        labelStyle: TextStyle(color: Colors.grey),
+                        labelStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white12,
                       ),
@@ -538,7 +519,7 @@ class _MyWidgetState extends State<MyWidget> {
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _callCreateNewPostService,
               style: ElevatedButton.styleFrom(
@@ -547,8 +528,8 @@ class _MyWidgetState extends State<MyWidget> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                 child: Text(
                   "Create New Post",
                   style: TextStyle(
@@ -567,5 +548,32 @@ class _MyWidgetState extends State<MyWidget> {
     );
 
   }
-}
 
+  placesAutoCompleteTextField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: GooglePlaceAutoCompleteTextField(
+        textEditingController: _locationController,
+        googleAPIKey: 'AIzaSyDBvFOnu4xQhn3EprY9llKqnfOkZkVw6ms',
+        inputDecoration: const InputDecoration(
+          hintText: "Select Store",
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+        ),
+        debounceTime: 400,
+        countries: const ['ca'],
+        getPlaceDetailWithLatLng: (Prediction prediction) {
+          print('prediction - ${prediction}');
+          _handleLocationPick(prediction.placeId!);
+        },
+        itemClick: (Prediction prediction) {
+          _locationController.text = prediction.description ?? "";
+          _locationController.selection = TextSelection.fromPosition(
+              TextPosition(offset: prediction.description?.length ?? 0));
+        },
+        seperatedBuilder: const Divider(),
+        containerHorizontalPadding: 10,
+      ),
+    );
+  }
+}

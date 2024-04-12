@@ -11,7 +11,7 @@ class SignUpPage extends StatelessWidget {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController phonenumberController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class SignUpPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set the color of the back arrow to white
         ),
       ),
@@ -60,7 +60,7 @@ class SignUpPage extends StatelessWidget {
                   // First name text field
                   TextField(
                     controller: firstNameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'First name...',
                       hintStyle: TextStyle(
                         color: kSecondaryColor,
@@ -77,7 +77,7 @@ class SignUpPage extends StatelessWidget {
                   // Last Name text field
                   TextField(
                     controller: lastNameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Last name...',
                       hintStyle: TextStyle(
                         color: kSecondaryColor,
@@ -90,32 +90,10 @@ class SignUpPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10.0),
-
-                  // Phone Number text field
-                  // Phone Number text field
-                  TextField(
-                    controller: phonenumberController,
-                    decoration: InputDecoration(
-                      hintText: 'Phone number...',
-                      hintStyle: TextStyle(
-                        color: kSecondaryColor,
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: kTextColor,
-                        ),
-                      ),
-                    ),
-                    keyboardType: TextInputType.phone, // Set keyboard type to phone
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Allow only numbers
-                    ],
-                  ),
-                  const SizedBox(height: 10.0),
                   // Email address text field
                   TextField(
                     controller: emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Email address...',
                       hintStyle: TextStyle(
                         color: kSecondaryColor,
@@ -134,10 +112,9 @@ class SignUpPage extends StatelessWidget {
                       // Check if any of the fields are empty
                       if (firstNameController.text.isEmpty ||
                           lastNameController.text.isEmpty ||
-                          phonenumberController.text.isEmpty ||
                           emailController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                          const SnackBar(
                             backgroundColor: Colors.red,
                             content: Text('Please fill in all fields'),
                             duration: Duration(seconds: 2),
@@ -172,7 +149,7 @@ class SignUpPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(),
+                            builder: (context) => const HomePage(),
                           ),
                         );
                       } else {
@@ -181,7 +158,7 @@ class SignUpPage extends StatelessWidget {
                           SnackBar(
                             backgroundColor: Colors.red,
                             content: Text('Error: ${signUpResult['error']}'),
-                            duration: Duration(seconds: 2),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       }

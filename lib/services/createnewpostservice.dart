@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageService.dart';
 import '../config/apiconfig.dart';
@@ -16,10 +17,13 @@ class NewPostService {
     required String storePlaceId,
   }) async {
     try {
-      final String apiUrl = '${ApiConfig.baseUrlPost}/post'; // Adjust the API endpoint
+      const String apiUrl = '${ApiConfig.baseUrlPost}/post';
+      print('$productName, $storePlaceId, $newQuantity');
 
       final secureStorageService = SecureStorageService();
       final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
+
+      print('access-token-${accessToken}');
 
       if (accessToken == null) {
         throw Exception('Access token not available');
@@ -71,6 +75,10 @@ class NewPostService {
       request.fields['storePlaceId'] = storePlaceId;
 
       var response = await http.Response.fromStream(await request.send());
+
+      if (kDebugMode) {
+        print('response-${response.statusCode}, ${response.body}');
+      }
 
       if (response.statusCode == 201) {
         print('New post created successfully');
