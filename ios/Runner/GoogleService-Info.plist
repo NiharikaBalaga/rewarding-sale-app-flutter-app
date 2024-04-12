@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBLy9o7uNEuxAEmpe8pF8I6DB6tJ4CBo7g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>91296298912</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sale.spotter.rewardingSaleAppFlutterApp</string>
+	<key>PROJECT_ID</key>
+	<string>reward-sale-app-flutter-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>reward-sale-app-flutter-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:91296298912:ios:0694f1a325e2b7b3a0d6c5</string>
+</dict>
+</plist>
