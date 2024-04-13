@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "91296298912",
+    "project_id": "reward-sale-app-flutter-app",
+    "storage_bucket": "reward-sale-app-flutter-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91296298912:android:59f6497ccd114a7ca0d6c5",
+        "android_client_info": {
+          "package_name": "com.sale.spotter.rewarding_sale_app_flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVzJcNBufnF25E83zg_RWnKjwgsd7Ls1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

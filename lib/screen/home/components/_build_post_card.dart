@@ -89,14 +89,14 @@ class _PostCardState extends State<PostCard> {
                         count: _viewCount,
                       ),
 
-                      _buildIconButton(
-                        icon: FontAwesomeIcons.share,
-                        color: kPrimaryColor,
-                        onPressed: () {
-                          // Add share functionality here
-                        },
-                        count: 15,
-                      ),
+                      // _buildIconButton(
+                      //   icon: FontAwesomeIcons.share,
+                      //   color: kPrimaryColor,
+                      //   onPressed: () {
+                      //     // Add share functionality here
+                      //   },
+                      //   count: 15,
+                      // ),
                     ],
                   ),
                 ),
@@ -188,7 +188,7 @@ class _PostCardState extends State<PostCard> {
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(width: 150),
+              const SizedBox(width: 140),
               Text(
                 post.postCategory.split(' ').take(2).join(' '),
                 style: const TextStyle(

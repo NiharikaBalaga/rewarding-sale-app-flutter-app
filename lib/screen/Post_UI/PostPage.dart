@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +9,6 @@ import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/home/home.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../services/createnewpostservice.dart';
-import '../../services/getplaceidservice.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -21,6 +18,7 @@ class PostPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
+        automaticallyImplyLeading: false,
         title: const Text(
           'Add Product',
           style: TextStyle(color: Colors.white, fontSize: 18),
@@ -55,6 +53,7 @@ class PostPage extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: const TextStyle(color: Colors.white),
         unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        currentIndex: 1,
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -107,7 +106,7 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
   String? _placeId;
-  // String placeId = 'ChIJTa2TPvn2K4gRiHG331ctW2I';
+
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
   TextEditingController _productDescriptionController = TextEditingController();
@@ -158,18 +157,41 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
-  // Inside your widget or wherever you want to call the service function
+  // // Inside your widget or wherever you want to call the service function
   void _callCreateNewPostService() async {
     try {
       print('placeId: ${_placeId}');
       // Extract values from TextControllers
-      String productName = _productNameController.text;
-      double oldPrice = double.parse(_oldPriceController.text.trim());
-      double newPrice = double.parse(_newPriceController.text.trim());
+      String productName = _productNameController.text.trim();
+      String productDescription = _productDescriptionController.text.trim();
+      double oldPrice = double.tryParse(_oldPriceController.text.trim()) ?? 0.0;
+      double newPrice = double.tryParse(_newPriceController.text.trim()) ?? 0.0;
+      int newQuantity = int.tryParse(_newQuantityController.text.trim()) ?? 0;
+      int oldQuantity = int.tryParse(_oldQuantityController.text.trim()) ?? 0;
+
+      // Check if any of the required fields are empty
+      if (productName.isEmpty ||
+          productDescription.isEmpty ||
+          oldPrice <= 0 ||
+          newPrice <= 0 ||
+          newQuantity <= 0 ||
+          oldQuantity <= 0 ||
+          _image == null ||
+          _image1 == null) {
+        // Show a snackbar or an alert dialog indicating that all fields are required
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('All fields are required.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Exit the function without proceeding further
+      }
+
       File priceTagImage = _image1!;
       File productImage = _image!;
-      int newQuantity = int.parse(_newQuantityController.text);
-      int oldQuantity = int.parse(_oldQuantityController.text);
+      // int newQuantity = int.parse(_newQuantityController.text);
+      // int oldQuantity = int.parse(_oldQuantityController.text);
       String storePlaceId = _placeId!;
 
       // Call the createNewPost function
@@ -527,15 +549,28 @@ class _MyWidgetState extends State<MyWidget> {
 
   placesAutoCompleteTextField() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: 65,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey, width: 0.5), // Add border color and width
+        borderRadius: BorderRadius.circular(7.0), // Add border radius
+      ),
+
+      padding: const EdgeInsets.symmetric(horizontal: 0),
+
       child: GooglePlaceAutoCompleteTextField(
+
         textEditingController: _locationController,
         googleAPIKey: 'AIzaSyDBvFOnu4xQhn3EprY9llKqnfOkZkVw6ms',
+
         inputDecoration: const InputDecoration(
-          hintText: "Select Store",
+          hintText: "Search for a store",
+          hintStyle: TextStyle(color: Colors.grey), // Update hint text color
           border: InputBorder.none,
-          enabledBorder: InputBorder.none,
+          contentPadding: EdgeInsets.fromLTRB(10, 15, 15, 10), // Adjust content padding for left alignment and height
+          prefixIcon: Icon(Icons.location_on, color: kPrimaryColor, size: 35), // Add location icon
+          alignLabelWithHint: true, // Align label with the hint text
         ),
+
         debounceTime: 400,
         countries: const ['ca'],
         getPlaceDetailWithLatLng: (Prediction prediction) {

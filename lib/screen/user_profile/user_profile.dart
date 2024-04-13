@@ -1,14 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rewarding_sale_app_flutter_app/services/api_services/auth.dart';
+import 'package:rewarding_sale_app_flutter_app/screen/user_profile/aboutus_page.dart';
 import 'dart:io';
 
 import '../../constant.dart';
 import '../../models/CurrentUser.dart';
+import '../../services/api_services/auth.dart';
+import '../../services/editcurrentuser.dart';
 import '../../services/getcurrentuserservice.dart';
 import '../MyPost_UI/my_post_ui.dart';
 import '../login/components/_body.dart';
+import 'favoritePostsPage.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -46,6 +48,7 @@ class _UserProfileState extends State<UserProfile> {
   late File _image;
   late String userName = ''; // Variable to store user's full name
   late String email = '';
+  late String phoneNumber ='';
 
   @override
   void initState() {
@@ -60,12 +63,17 @@ class _UserProfileState extends State<UserProfile> {
       CurrentUser currentUser = await CurrentUserService.getCurrentUser();
       // Combine first name and last name to form full name
       setState(() {
-        userName = '${currentUser.firstName} ${currentUser.lastName}';
+        userName = '${_capitalizeFirstLetter(currentUser.firstName)} ${_capitalizeFirstLetter(currentUser.lastName)}';
         email = '${currentUser.email}';
+        phoneNumber ='${currentUser.phoneNumber}';
       });
     } catch (error) {
       print('Error fetching current user: $error');
     }
+  }
+
+  String _capitalizeFirstLetter(String word) {
+    return word.substring(0, 1).toUpperCase() + word.substring(1);
   }
 
   Future<void> _getImage() async {
@@ -79,190 +87,322 @@ class _UserProfileState extends State<UserProfile> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(height: 20),
-        GestureDetector(
-          onTap: _getImage,
-          child: Stack(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('assets/images/default-profile-picture.jpg'),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: _getImage,
-                    icon: Icon(Icons.edit),
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+  void _editProfile() {
+    String editedFirstName = userName.split(' ')[0];
+    String editedLastName = userName.split(' ')[1];
+    String editedEmail = email;
 
-        SizedBox(height: 20),
-        Text(
-          userName.isNotEmpty ? userName : 'Loading...', // Display user's full name
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        Text(
-          loginController.phoneNumber.value, // Replace this with the user's phone number
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        Text(
-          email.isNotEmpty ? email : 'Loading...',  // Replace this with the user's email address
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 20),
-        ListTile(
-          title: Text('Post Details', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
-        ),
-        Column(
-
-          children: [
-            SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black12,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey[100],
-              ),
-            ),
-            Divider(),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyPostPage()),
-                );
-              },
-              child: ListTile(
-                title: Text('My Posts'),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black12,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey[100],
-              ),
-            ),
-            Divider(),
-            InkWell(
-              onTap: () {
-                // Implement action when Favorite Products is tapped
-              },
-              child: ListTile(
-                title: Text('Favorite Products'),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black12,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey[100],
-              ),
-            ),
-            Divider(),
-            InkWell(
-              onTap: () {
-                // Implement action when About us is tapped
-              },
-              child: ListTile(
-                title: Text('About us'),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black12,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey[100],
-              ),
-            ),
-            Divider(),
-            InkWell(
-              onTap:  () async {
-                try {
-                  final AuthService authService = AuthService();
-                  await authService.logoutUser();
-                  Navigator.of(context).pushReplacementNamed('/login');
-                } catch(error) {
-                  if (kDebugMode) {
-                    print('Logout -error---$error');
-                  }
-                  Navigator.of(context).pushReplacementNamed('/login');
-                }
-              },
-              child: ListTile(
-                title: Text('Log out'),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-
-            ),
-
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black12,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.grey[100],
-              ),
-            ),
-            Divider(),
-          ],
-        ),
-      ],
-    );
-  }
-
-  void showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Row(
+        return AlertDialog(
+          title: Text('Edit Profile'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              CircularProgressIndicator(),
-              SizedBox(width: 20),
-              Text("Logging out..."),
+              TextField(
+                decoration: InputDecoration(labelText: 'First Name'),
+                controller: TextEditingController(text: editedFirstName),
+                onChanged: (value) {
+                  editedFirstName = value;
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Email'),
+                controller: TextEditingController(text: editedEmail),
+                onChanged: (value) {
+                  editedEmail = value;
+                },
+              ),
             ],
           ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () async {
+                final UserProfileService _userProfileService = UserProfileService();
+                // Call the updateProfile method from UserProfileService
+                final result = await _userProfileService.updateProfile(editedFirstName, editedEmail);
+                if (result['success']) {
+                  // Update the UI or show a message indicating success
+                  setState(() {
+                    userName = '$editedFirstName $editedLastName';
+                    email = editedEmail;
+                  });
+                  Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('User profile updated successfully'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  // Handle error if the update failed
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Failed to update profile: ${result['error']}'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         );
       },
     );
   }
+
+
+  Future<void> _showLogoutConfirmationDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Logout'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to log out?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Logout'),
+              onPressed: () async {
+                // Call your logout API service here
+                AuthService authservice = AuthService();
+                bool success = await authservice.logoutUser();
+                if (success) {
+                  // After logout, navigate to the home page
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                        (Route<dynamic> route) => false,
+                  );
+                } else {
+                  // Handle logout failure
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Failed to logout. Please try again.'),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 20),
+          GestureDetector(
+            onTap: _getImage,
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('assets/images/default-profile-picture.jpg'),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: _editProfile, // Changed from _getImage to _editProfile
+                      icon: Icon(Icons.edit),
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 20),
+          Text(
+            userName.isNotEmpty ? userName : 'Loading...', // Display user's full name
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Text(
+            phoneNumber.isNotEmpty ? phoneNumber : 'Loading...',// Replace this with the user's phone number
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 10),
+          Text(
+            email.isNotEmpty ? email : 'Loading...',  // Replace this with the user's email address
+            style: TextStyle(fontSize: 16),
+          ),
+          ListTile(
+            title: Text('Post Details', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
+          ),
+          Column(
+
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey[100],
+                ),
+              ),
+              Divider(),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyPostPage()),
+                  );
+                },
+                child: ListTile(
+                  title: Text('My Posts'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey[100],
+                ),
+              ),
+              Divider(),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FavoritePostsPage()),
+                  );
+                },
+                child: ListTile(
+                  title: Text('Favorite Posts'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey[100],
+                ),
+              ),
+              Divider(),
+              InkWell(
+                onTap: () {
+                  // Implement action when Membership is tapped
+                },
+                child: ListTile(
+                  title: Text('Membership'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey[100],
+                ),
+              ),
+              Divider(),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AboutUsPage()),
+                  );
+                },
+                child: ListTile(
+                  title: Text('About us'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey[100],
+                ),
+              ),
+
+              Divider(),
+              InkWell(
+                onTap: () {
+                  // Show logout confirmation dialog
+                  _showLogoutConfirmationDialog(context);
+                },
+                child: ListTile(
+                  title: Text('Log out'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.grey[100],
+                ),
+              ),
+              Divider(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
+
 

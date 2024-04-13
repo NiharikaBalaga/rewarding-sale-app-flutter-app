@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchPosts() async {
     try {
       List<Post> fetchedPosts = await PostService.fetchAllPosts();
-      print('Fetched Posts: $fetchedPosts'); // Debug print
       setState(() {
         posts = fetchedPosts;
       });
@@ -50,7 +49,10 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         userName = '$lastName';
       });
+      // double lastlatitude = -80.579977;
+      // double lastlongitude = 43.445395;
       await getUserLocation(
+
           currentUser.lastLatitude, currentUser.lastLongitude);
     } catch (error) {
       print('Error fetching current user: $error');
@@ -63,11 +65,11 @@ class _HomePageState extends State<HomePage> {
       await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
+        print(place);
         String address = '${place.street}';
         setState(() {
           userLocation = address;
         });
-        // fetchPosts();
       } else {
         print('No placemarks found for the provided coordinates.');
       }
@@ -76,16 +78,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _refresh() async {
+    // Fetch updated data
+    await fetchCurrentUser();
+    await fetchPosts();
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('Posts:');
-    posts.forEach((post) {
-      print(
-          'ID: ${post.id}, Title: ${post.productName}'); // Add more fields as needed
-    }); // Debug print
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
+        automaticallyImplyLeading: false,
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
@@ -139,11 +143,13 @@ class _HomePageState extends State<HomePage> {
         centerTitle: false,
         titleSpacing: 24.0,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: bodyHomePage(posts,
-              context), // Replace Container() with your implementation of the bodyHomePage widget
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: bodyHomePage(posts, context),
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -184,7 +190,7 @@ class _HomePageState extends State<HomePage> {
             );
           }
           if (index == 0) {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => HomePage()),
             );
