@@ -42,10 +42,43 @@ class CommentService {
       throw Exception('Failed to create comment: $error');
     }
   }
+  // static Future<dynamic> getComments(String postId) async {
+  //   try {
+  //     final String apiUrl = '${ApiConfig.baseUrlComment}${ApiConfig.getCommentEndpoint}/$postId';
+  //
+  //     final secureStorageService = SecureStorageService();
+  //     final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
+  //
+  //     if (accessToken == null) {
+  //       throw Exception('Access token not available');
+  //     }
+  //
+  //     final Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $accessToken',
+  //     };
+  //
+  //     final http.Response response = await http.get(
+  //       Uri.parse(apiUrl),
+  //       headers: headers,
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final dynamic responseBody = json.decode(response.body);
+  //       print('Comments retrieved successfully');
+  //       return responseBody;
+  //     } else {
+  //       throw Exception('Failed to retrieve comments: ${response.statusCode}');
+  //     }
+  //   } catch (error) {
+  //     throw Exception('Failed to retrieve comments: $error');
+  //   }
+  // }
+
 
   static Future<List<dynamic>> getComments(String postId) async {
     try {
-      final String apiUrl = '${ApiConfig.baseUrlComment}/comment/comments/$postId';
+      final String apiUrl = '${ApiConfig.baseUrlComment}${ApiConfig.getCommentEndpoint}/$postId';
 
       final secureStorageService = SecureStorageService();
       final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
@@ -66,7 +99,10 @@ class CommentService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<dynamic> comments = responseData['comments']; // Extract comments from the response
+        final List<dynamic> comments = responseData['comments'];
+        // Extract comments from the response
+        // final List<dynamic> commentsId = responseData['id'];
+        // print(commentsId);
         print('Comments retrieved successfully');
         return comments;
       } else {
@@ -77,5 +113,73 @@ class CommentService {
     }
   }
 
+  static Future<Map<String, dynamic>> editComment(String commentId, String updatedComment) async {
+    try {
+      final String apiUrl = '${ApiConfig.baseUrlComment}${ApiConfig.editCommentEndpoint}/$commentId';
 
+      final secureStorageService = SecureStorageService();
+      final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
+
+      if (accessToken == null) {
+        throw Exception('Access token not available');
+      }
+
+      final Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      };
+
+      final Map<String, dynamic> requestBody = {
+        'Comment': updatedComment,
+      };
+
+      final http.Response response = await http.put(
+        Uri.parse(apiUrl),
+        headers: headers,
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print('Comment edited successfully');
+        return responseData;
+      } else {
+        throw Exception('Failed to edit comment: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to edit comment: $error');
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteComment(String commentId) async {
+    try {
+      final String apiUrl = '${ApiConfig.baseUrlComment}${ApiConfig.deleteCommentEndpoint}/$commentId';
+
+      final secureStorageService = SecureStorageService();
+      final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
+
+      if (accessToken == null) {
+        throw Exception('Access token not available');
+      }
+
+      final Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+      };
+
+      final http.Response response = await http.delete(
+        Uri.parse(apiUrl),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print('Comment deleted successfully');
+        return responseData;
+      } else {
+        throw Exception('Failed to delete comment: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to delete comment: $error');
+    }
+  }
 }

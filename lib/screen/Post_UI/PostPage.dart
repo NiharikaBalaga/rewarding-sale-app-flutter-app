@@ -106,6 +106,7 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image;
   File? _image1;
   String? _placeId;
+  bool _isLoading = false;
 
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
@@ -157,10 +158,158 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
-  // // Inside your widget or wherever you want to call the service function
+  // // // Inside your widget or wherever you want to call the service function
+  // void _callCreateNewPostService() async {
+  //   try {
+  //     print('placeId: ${_placeId}');
+  //     // Extract values from TextControllers
+  //     String productName = _productNameController.text.trim();
+  //     String productDescription = _productDescriptionController.text.trim();
+  //     double oldPrice = double.tryParse(_oldPriceController.text.trim()) ?? 0.0;
+  //     double newPrice = double.tryParse(_newPriceController.text.trim()) ?? 0.0;
+  //     int newQuantity = int.tryParse(_newQuantityController.text.trim()) ?? 0;
+  //     int oldQuantity = int.tryParse(_oldQuantityController.text.trim()) ?? 0;
+  //
+  //     // Check if any of the required fields are empty
+  //     if (productName.isEmpty ||
+  //         productDescription.isEmpty ||
+  //         oldPrice <= 0 ||
+  //         newPrice <= 0 ||
+  //         newQuantity <= 0 ||
+  //         oldQuantity <= 0 ||
+  //         _image == null ||
+  //         _image1 == null) {
+  //       // Show a snackbar or an alert dialog indicating that all fields are required
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('All fields are required.'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //       return; // Exit the function without proceeding further
+  //     }
+  //
+  //     File priceTagImage = _image1!;
+  //     File productImage = _image!;
+  //     // int newQuantity = int.parse(_newQuantityController.text);
+  //     // int oldQuantity = int.parse(_oldQuantityController.text);
+  //     String storePlaceId = _placeId!;
+  //
+  //     // Call the createNewPost function
+  //     await NewPostService.createNewPost(
+  //       productName: productName,
+  //       oldPrice: oldPrice,
+  //       newPrice: newPrice,
+  //       priceTagImage: priceTagImage,
+  //       productImage: productImage,
+  //       newQuantity: newQuantity,
+  //       oldQuantity: oldQuantity,
+  //       storePlaceId: storePlaceId
+  //     );
+  //
+  //     // If execution reaches this point, it means the function call was successful
+  //     print('createNewPost function called successfully');
+  //     Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (context) => const HomePage()));
+  //   } catch (error) {
+  //     // Handle any errors that occur during the function call
+  //     print('Error calling createNewPost function: $error');
+  //     // Navigator.of(context).pushReplacement(
+  //     //     MaterialPageRoute(builder: (context) => const HomePage()));
+  //   }
+  // }
+
+  // void _callCreateNewPostService() async {
+  //   try {
+  //     setState(() {
+  //       _isLoading = true; // Set loading state to true
+  //     });
+  //
+  //     // Extract values from TextControllers
+  //     String productName = _productNameController.text.trim();
+  //     String productDescription = _productDescriptionController.text.trim();
+  //     double oldPrice = double.tryParse(_oldPriceController.text.trim()) ?? 0.0;
+  //     double newPrice = double.tryParse(_newPriceController.text.trim()) ?? 0.0;
+  //     int newQuantity = int.tryParse(_newQuantityController.text.trim()) ?? 0;
+  //     int oldQuantity = int.tryParse(_oldQuantityController.text.trim()) ?? 0;
+  //
+  //     // Check if any of the required fields are empty
+  //     if (productName.isEmpty ||
+  //         productDescription.isEmpty ||
+  //         oldPrice <= 0 ||
+  //         newPrice <= 0 ||
+  //         newQuantity <= 0 ||
+  //         oldQuantity <= 0 ||
+  //         _image == null ||
+  //         _image1 == null) {
+  //       // Show a snackbar or an alert dialog indicating that all fields are required
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('All fields are required.'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //
+  //       setState(() {
+  //         _isLoading = false; // Set loading state to false
+  //       });
+  //
+  //       return; // Exit the function without proceeding further
+  //     }
+  //
+  //     File priceTagImage = _image1!;
+  //     File productImage = _image!;
+  //     String storePlaceId = _placeId!;
+  //
+  //     // Call the createNewPost function
+  //     await NewPostService.createNewPost(
+  //         productName: productName,
+  //         oldPrice: oldPrice,
+  //         newPrice: newPrice,
+  //         priceTagImage: priceTagImage,
+  //         productImage: productImage,
+  //         newQuantity: newQuantity,
+  //         oldQuantity: oldQuantity,
+  //         storePlaceId: storePlaceId
+  //     );
+  //
+  //     // If execution reaches this point, it means the function call was successful
+  //     print('createNewPost function called successfully');
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Post successful!'),
+  //         backgroundColor: Colors.green,
+  //       ),
+  //     );
+  //
+  //     // Set loading state back to false
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //
+  //     // Navigate to the home page only after post operation is successful
+  //     Navigator.of(context).pushReplacement(
+  //       MaterialPageRoute(builder: (context) => const HomePage()),
+  //     );
+  //   } catch (error) {
+  //     // Handle any errors that occur during the post operation
+  //
+  //     // Set loading state back to false
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //
+  //     print('Error calling createNewPost function: $error');
+  //   }
+  // }
+
+
   void _callCreateNewPostService() async {
     try {
-      print('placeId: ${_placeId}');
+      setState(() {
+        _isLoading = true; // Set loading state to true
+      });
+
       // Extract values from TextControllers
       String productName = _productNameController.text.trim();
       String productDescription = _productDescriptionController.text.trim();
@@ -185,43 +334,79 @@ class _MyWidgetState extends State<MyWidget> {
             backgroundColor: Colors.red,
           ),
         );
+
+        // Set loading state back to false after a delay
+        await Future.delayed(Duration(seconds: 10));
+        setState(() {
+          _isLoading = false; // Set loading state to false
+        });
+
         return; // Exit the function without proceeding further
       }
 
       File priceTagImage = _image1!;
       File productImage = _image!;
-      // int newQuantity = int.parse(_newQuantityController.text);
-      // int oldQuantity = int.parse(_oldQuantityController.text);
       String storePlaceId = _placeId!;
 
       // Call the createNewPost function
       await NewPostService.createNewPost(
-        productName: productName,
-        oldPrice: oldPrice,
-        newPrice: newPrice,
-        priceTagImage: priceTagImage,
-        productImage: productImage,
-        newQuantity: newQuantity,
-        oldQuantity: oldQuantity,
-        storePlaceId: storePlaceId
+          productName: productName,
+          oldPrice: oldPrice,
+          newPrice: newPrice,
+          priceTagImage: priceTagImage,
+          productImage: productImage,
+          newQuantity: newQuantity,
+          oldQuantity: oldQuantity,
+          storePlaceId: storePlaceId
       );
 
       // If execution reaches this point, it means the function call was successful
       print('createNewPost function called successfully');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Post successful!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Set loading state back to false
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Navigate to the home page only after post operation is successful
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()));
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     } catch (error) {
-      // Handle any errors that occur during the function call
+      // Handle any errors that occur during the post operation
+
+      // Set loading state back to false
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Show a snackbar or an alert dialog indicating the failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to post: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+
       print('Error calling createNewPost function: $error');
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()));
     }
   }
 
 
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return _isLoading // Check loading state
+        ? Center(
+      child: CircularProgressIndicator(), // Show loading indicator
+    )
+        :Padding(
       padding: const EdgeInsets.all(20.0),
       child: SingleChildScrollView(
         child: Column(
@@ -588,5 +773,8 @@ class _MyWidgetState extends State<MyWidget> {
     );
   }
 }
+
+
+
 
 

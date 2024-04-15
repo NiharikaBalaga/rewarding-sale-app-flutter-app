@@ -36,13 +36,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
   String _confirmationMessage = '';
   bool _showAllComments = false;
   late CurrentUser currentUser;
+  List<String> commentIds = []; // List to hold comment IDs
 
   @override
   void initState() {
     super.initState();
     _fetchComments();
     _fetchCurrentUser();
-    comments = List<String>.from(widget.post.comments ?? []); // Initialize comments list
+    comments = List<String>.from(widget.post.comments ?? []);
     _editController = TextEditingController();
     _commentController = TextEditingController();
   }
@@ -61,8 +62,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
     CommentService.getComments(postId)
         .then((List<dynamic> commentsData) {
       setState(() {
-        // Extract comment text from each comment object
+        // Extract comment text and IDs from each comment object
         this.comments = commentsData.map((comment) => comment['comment'] as String).toList();
+        this.commentIds = commentsData.map((comment) => comment['id'] as String).toList();
       });
     })
         .catchError((error) {
@@ -70,6 +72,31 @@ class _PostDetailPageState extends State<PostDetailPage> {
       // Handle error here
     });
   }
+
+  //
+  // void _fetchComments() {
+  //   final String postId = widget.post.id;
+  //   CommentService.getComments(postId)
+  //       .then((dynamic responseBody) {
+  //     if (responseBody != null) {
+  //       setState(() {
+  //         // Extract comments and their IDs from the response
+  //         List<dynamic> commentsData = responseBody['comments'];
+  //         comments = commentsData.map((comment) => comment['comment'] as String).toList();
+  //         commentIds = commentsData.map((comment) => comment['id'] as String).toList();
+  //         print("********************");
+  //         print(commentIds);
+  //         print("********************");
+  //       });
+  //     } else {
+  //       print('Failed to fetch comments: Empty response');
+  //     }
+  //   })
+  //       .catchError((error) {
+  //     print('Failed to fetch comments: $error');
+  //     // Handle error here
+  //   });
+  // }
 
 
   @override
@@ -253,59 +280,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   SizedBox(height: 10),
                   _buildAddCommentField(), // Render the add comment UI
                   SizedBox(height: 10),
-              //     for (var commentIndex = 0; commentIndex < comments.length; commentIndex++)
-              //       Padding(
-              //         padding: const EdgeInsets.symmetric(vertical: 8.0),
-              //         child: Row(
-              //           children: [
-              //             Expanded(
-              //               child: _isEditing && commentIndex == _editIndex
-              //                   ? TextField(
-              //                 controller: _editController,
-              //                 onSubmitted: (editedComment) {
-              //                   setState(() {
-              //                     comments[commentIndex] = editedComment; // Update the comment in the list
-              //                     _isEditing = false; // Set editing flag to false
-              //                   });
-              //                 },
-              //               )
-              //                   : Container(
-              //                 padding: EdgeInsets.all(8),
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.grey[200],
-              //                   borderRadius: BorderRadius.circular(8),
-              //                 ),
-              //                 child: Text(comments[commentIndex]),
-              //               ),
-              //             ),
-              //             IconButton(
-              //               onPressed: () {
-              //                 setState(() {
-              //                   if (!_isEditing) {
-              //                     _editIndex = commentIndex;
-              //                     _editController.text = comments[commentIndex];
-              //                     _isEditing = true;
-              //                   } else {
-              //                     comments[_editIndex] = _editController.text;
-              //                     _isEditing = false;
-              //                   }
-              //                 });
-              //               },
-              //               icon: _isEditing && commentIndex == _editIndex ? Icon(Icons.check) : Icon(Icons.edit, color: kPrimaryColor),
-              //             ),
-              //             IconButton(
-              //               onPressed: () {
-              //                 setState(() {
-              //                   comments.removeAt(commentIndex);
-              //                 });
-              //               },
-              //               icon: Icon(Icons.delete, color: Colors.red),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //   ],
-              // ),
                   _buildComments(),
               SizedBox(height: 10),
               Row(
@@ -532,9 +506,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     if (!_isEditing) {
                                       _editIndex = commentIndex;
                                       _editController.text = comments[commentIndex];
+
                                       _isEditing = true;
                                     } else {
                                       comments[_editIndex] = _editController.text;
+                                      print("outside" +_editController.text);
+
+    CommentService.editComment(comment, _editController.text).then((response) {
+                    // Handle the response if needed
+                    print('Comment edited successfully');
+                  }).catchError((error) {
+                    // Handle the error if needed
+                    print('Error editing comment: $error');
+                  });
+
                                       _isEditing = false;
                                     }
                                   });
@@ -543,10 +528,36 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     ? Icon(Icons.check,color: Colors.green,)
                                     : Icon(Icons.edit, color:kPrimaryColor),
                               ),
+
+
+
+                              // IconButton(
+                              //   onPressed: () {
+                              //     setState(() {
+                              //       comments.removeAt(commentIndex);
+                              //     });
+                              //   },
+                              //   icon: Icon(Icons.delete, color: Colors.red),
+                              // ),
                               IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    comments.removeAt(commentIndex);
+                                    // Get the comment ID corresponding to the comment to be deleted
+                                    String commentId = commentIds[commentIndex];
+
+                                    // Call the deleteComment service with the comment ID
+                                    CommentService.deleteComment(commentId)
+                                        .then((response) {
+                                      // Handle the response if needed
+                                      print('Comment deleted successfully');
+                                      // Remove the comment from the list
+                                      comments.removeAt(commentIndex);
+                                      commentIds.removeAt(commentIndex);
+                                    })
+                                        .catchError((error) {
+                                      // Handle the error if needed
+                                      print('Error deleting comment: $error');
+                                    });
                                   });
                                 },
                                 icon: Icon(Icons.delete, color: Colors.red),
