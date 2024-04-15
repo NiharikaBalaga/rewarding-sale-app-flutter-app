@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../constant.dart';
+import '../../models/CurrentUser.dart';
 import '../../services/commentservice.dart';
+import '../../services/getcurrentuserservice.dart';
 import '../../services/reportservice.dart';
+import '../../services/voteservice.dart';
 import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -30,14 +34,43 @@ class _PostDetailPageState extends State<PostDetailPage> {
   late TextEditingController _commentController;
   bool _isButtonConfirmed = false;
   String _confirmationMessage = '';
+  bool _showAllComments = false;
+  late CurrentUser currentUser;
 
   @override
   void initState() {
     super.initState();
+    _fetchComments();
+    _fetchCurrentUser();
     comments = List<String>.from(widget.post.comments ?? []); // Initialize comments list
     _editController = TextEditingController();
     _commentController = TextEditingController();
   }
+
+  Future<void> _fetchCurrentUser() async {
+    try {
+      currentUser = await CurrentUserService.getCurrentUser();
+      setState(() {});
+    } catch (error) {
+      print('Failed to fetch current user: $error');
+    }
+  }
+
+  void _fetchComments() {
+    final String postId = widget.post.id;
+    CommentService.getComments(postId)
+        .then((List<dynamic> commentsData) {
+      setState(() {
+        // Extract comment text from each comment object
+        this.comments = commentsData.map((comment) => comment['comment'] as String).toList();
+      });
+    })
+        .catchError((error) {
+      print('Failed to fetch comments: $error');
+      // Handle error here
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -220,59 +253,60 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   SizedBox(height: 10),
                   _buildAddCommentField(), // Render the add comment UI
                   SizedBox(height: 10),
-                  for (var commentIndex = 0; commentIndex < comments.length; commentIndex++)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: _isEditing && commentIndex == _editIndex
-                                ? TextField(
-                              controller: _editController,
-                              onSubmitted: (editedComment) {
-                                setState(() {
-                                  comments[commentIndex] = editedComment; // Update the comment in the list
-                                  _isEditing = false; // Set editing flag to false
-                                });
-                              },
-                            )
-                                : Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(comments[commentIndex]),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (!_isEditing) {
-                                  _editIndex = commentIndex;
-                                  _editController.text = comments[commentIndex];
-                                  _isEditing = true;
-                                } else {
-                                  comments[_editIndex] = _editController.text;
-                                  _isEditing = false;
-                                }
-                              });
-                            },
-                            icon: _isEditing && commentIndex == _editIndex ? Icon(Icons.check) : Icon(Icons.edit, color: kPrimaryColor),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                comments.removeAt(commentIndex);
-                              });
-                            },
-                            icon: Icon(Icons.delete, color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
+              //     for (var commentIndex = 0; commentIndex < comments.length; commentIndex++)
+              //       Padding(
+              //         padding: const EdgeInsets.symmetric(vertical: 8.0),
+              //         child: Row(
+              //           children: [
+              //             Expanded(
+              //               child: _isEditing && commentIndex == _editIndex
+              //                   ? TextField(
+              //                 controller: _editController,
+              //                 onSubmitted: (editedComment) {
+              //                   setState(() {
+              //                     comments[commentIndex] = editedComment; // Update the comment in the list
+              //                     _isEditing = false; // Set editing flag to false
+              //                   });
+              //                 },
+              //               )
+              //                   : Container(
+              //                 padding: EdgeInsets.all(8),
+              //                 decoration: BoxDecoration(
+              //                   color: Colors.grey[200],
+              //                   borderRadius: BorderRadius.circular(8),
+              //                 ),
+              //                 child: Text(comments[commentIndex]),
+              //               ),
+              //             ),
+              //             IconButton(
+              //               onPressed: () {
+              //                 setState(() {
+              //                   if (!_isEditing) {
+              //                     _editIndex = commentIndex;
+              //                     _editController.text = comments[commentIndex];
+              //                     _isEditing = true;
+              //                   } else {
+              //                     comments[_editIndex] = _editController.text;
+              //                     _isEditing = false;
+              //                   }
+              //                 });
+              //               },
+              //               icon: _isEditing && commentIndex == _editIndex ? Icon(Icons.check) : Icon(Icons.edit, color: kPrimaryColor),
+              //             ),
+              //             IconButton(
+              //               onPressed: () {
+              //                 setState(() {
+              //                   comments.removeAt(commentIndex);
+              //                 });
+              //               },
+              //               icon: Icon(Icons.delete, color: Colors.red),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //   ],
+              // ),
+                  _buildComments(),
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -289,17 +323,23 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      try {
+                        await VoteService.voteForPost(widget.post.id);
                       setState(() {
                         upvoteCount++; // Increment upvote count
                         print('upvote count: $upvoteCount');
                       });
                       _showFlyingAnimation(context);
+                    } catch (error) {
+                      print('Failed to vote for post: $error');
+                      // Handle error here
+                      }
                     },
                     child: Column(
                       children: [
                         Icon(Icons.thumb_up, color: Colors.green, size: 36), // Thumb up icon
-                        Text('Upvote($upvoteCount)', style: TextStyle(color: Colors.green)), // Text below the icon
+                        Text('Upvote', style: TextStyle(color: Colors.green)), // Text below the icon
                       ],
                     ),
                   ),
@@ -307,8 +347,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ),
             ],
           ),
+        ],
         ),
+
       ),
+
+    ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: kPrimaryColor, // Set the background color
         selectedItemColor: Colors.white, // Set the selected item color
@@ -384,7 +428,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           onPressed: () async {
             if (_commentController.text.isNotEmpty) {
               try {
-                await CommentService.createComment(widget.post.userId,widget.post.id, _commentController.text);
+                await CommentService.createComment(widget.post.id, _commentController.text);
                 setState(() {
                   comments.add(_commentController.text);
                   _commentController.clear();
@@ -397,6 +441,142 @@ class _PostDetailPageState extends State<PostDetailPage> {
           },
           icon: Icon(Icons.send, color: kPrimaryColor),
         ),
+      ],
+    );
+  }
+  Widget _buildComments() {
+    // Check if there are no comments yet
+    if (comments.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'Other Comments',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'No comments yet',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Reverse the order of comments to display the latest ones first
+    List<String> reversedComments = List.from(comments.reversed);
+    int remainingComments = reversedComments.length - 1;
+    List<String> displayedComments = reversedComments.sublist(0, _showAllComments ? reversedComments.length : 1);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            'Other Comments',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+          ),
+        ),
+        SizedBox(height: 10),
+        Container(
+          padding: EdgeInsets.symmetric(vertical:5, horizontal: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey[200],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: displayedComments.asMap().entries.map((entry) {
+              int commentIndex = entry.key;
+              String comment = entry.value;
+              // Check if the comment belongs to the current user
+              bool isCurrentUserComment = currentUser != null && currentUser.id == widget.post.userId;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 1.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _isEditing && commentIndex == _editIndex
+                              ? TextField(
+                            controller: _editController,
+                            onSubmitted: (editedComment) {
+                              setState(() {
+                                comments[commentIndex] = editedComment; // Update the comment in the list
+                                _isEditing = false; // Set editing flag to false
+                              });
+                            },
+                          )
+                              : Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(comment),
+                          ),
+                        ),
+                        if (isCurrentUserComment)
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (!_isEditing) {
+                                      _editIndex = commentIndex;
+                                      _editController.text = comments[commentIndex];
+                                      _isEditing = true;
+                                    } else {
+                                      comments[_editIndex] = _editController.text;
+                                      _isEditing = false;
+                                    }
+                                  });
+                                },
+                                icon: _isEditing && commentIndex == _editIndex
+                                    ? Icon(Icons.check,color: Colors.green,)
+                                    : Icon(Icons.edit, color:kPrimaryColor),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    comments.removeAt(commentIndex);
+                                  });
+                                },
+                                icon: Icon(Icons.delete, color: Colors.red),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                    Divider(), // Add a divider between comments
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        if (remainingComments > 0)
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _showAllComments = !_showAllComments;
+              });
+            },
+            child: Text(
+              _showAllComments ? 'Hide Comments' : 'View $remainingComments more comments',
+              style: TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -531,5 +711,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       entry.remove();
     });
   }
+
+
 
 
