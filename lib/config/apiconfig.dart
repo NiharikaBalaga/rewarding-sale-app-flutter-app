@@ -23,4 +23,12 @@ class ApiConfig {
   //Report Service
   static const String baseUrlReport = 'http://10.0.2.2:3007/api';
   static const String getReportEndpoint ='/report';
+
+  //Rewards Service
+  static const String baseUrlRewards = 'http://10.0.2.2:3006/api';
+  static const String getRewardsEndpoint ='/rewards/user/points';
+
+  //Vote Service
+  static const String baseUrlVote = 'http://10.0.2.2:3005/api';
+  static const String patchVoteEndpoint ='/vote';
 }

@@ -83,7 +83,7 @@ class _MyPostPageState extends State<MyPostPage> {
       await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        String address = '${place.locality}';
+        String address = '${place.street}';
         setState(() {
           location = address;
         });
