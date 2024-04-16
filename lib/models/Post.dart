@@ -25,6 +25,7 @@ class Post {
   final String storeProvinceShortName;
   final String storeUrl;
   List<String>? comments; // Make comments nullable
+  final String? postDeclinedReason;
 
   Post({
     required this.id,
@@ -53,6 +54,7 @@ class Post {
     required this.storeProvinceShortName,
     required this.storeUrl,
     this.comments, // Make comments nullable
+    this.postDeclinedReason,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -66,8 +68,12 @@ class Post {
       productImageS3Uri: json['productImageS3Uri'] ?? '',
       productImageObjectUrl: json['productImageObjectUrl'] ?? '',
       productName: json['productName'] ?? '',
-      oldPrice: json['oldPrice'] != null ? double.parse(json['oldPrice'].toString()) : 0.0,
-      newPrice: json['newPrice'] != null ? double.parse(json['newPrice'].toString()) : 0.0,
+      oldPrice: json['oldPrice'] != null
+          ? double.parse(json['oldPrice'].toString())
+          : 0.0,
+      newPrice: json['newPrice'] != null
+          ? double.parse(json['newPrice'].toString())
+          : 0.0,
       oldQuantity: json['oldQuantity'] ?? 0,
       newQuantity: json['newQuantity'] ?? 0,
       storePlaceId: json['storePlaceId'] ?? '',
@@ -82,7 +88,10 @@ class Post {
       storeProvinceLongName: json['storeProvinceLongName'] ?? '',
       storeProvinceShortName: json['storeProvinceShortName'] ?? '',
       storeUrl: json['storeUrl'] ?? '',
-      comments: json['comments'] != null ? List<String>.from(json['comments']) : null, // Initialize comments as an empty list if not provided
+      comments: json['comments'] != null
+          ? List<String>.from(json['comments'])
+          : null, // Initialize comments as an empty list if not provided
+      postDeclinedReason: json['postDeclinedReason'],
     );
   }
 }
