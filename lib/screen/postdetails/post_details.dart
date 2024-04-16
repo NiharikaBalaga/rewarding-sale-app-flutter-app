@@ -406,8 +406,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
               decoration: InputDecoration(
                 hintText: 'Add a comment...',
                 border: InputBorder.none, // Remove the default border
-                contentPadding:
-                    EdgeInsets.all(12), // Adjust the content padding
+                // contentPadding:
+                    // EdgeInsets.all(12), // Adjust the content padding
               ),
             ),
           ),
