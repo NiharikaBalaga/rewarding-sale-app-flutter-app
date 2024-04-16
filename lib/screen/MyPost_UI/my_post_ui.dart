@@ -175,13 +175,6 @@ class _MyPostPageState extends State<MyPostPage> {
             DataCell(
               Row(
                 children: [
-                  if (showEditButton)
-                    IconButton(
-                      icon: Icon(Icons.edit, color: Colors.green),
-                      onPressed: () {
-                        _editPost(context, post);
-                      },
-                    ),
                   if (showDeleteButton)
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
@@ -412,75 +405,4 @@ class _MyPostPageState extends State<MyPostPage> {
   }
 }
 
-void _editPost(BuildContext context, Post post) {
-  String editedProductName = post.productName;
-  double editedNewPrice = post.newPrice;
-  int editedNewQuantity = post.newQuantity;
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Edit Post"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    initialValue: post.productName,
-                    maxLines: null, // Allow multiple lines
-                    decoration: InputDecoration(labelText: 'Product Name'),
-                    onChanged: (value) {
-                      editedProductName = value;
-                    },
-                  ),
-                ),
-              ],
-            ),
-            TextFormField(
-              initialValue: post.newPrice.toString(),
-              decoration: InputDecoration(labelText: 'New Price'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                editedNewPrice = double.tryParse(value) ?? 0.0;
-              },
-            ),
-            TextFormField(
-              initialValue: post.newQuantity.toString(),
-              decoration: InputDecoration(labelText: 'New Quantity'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                editedNewQuantity = int.tryParse(value) ?? 0;
-              },
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () async {
-              // Perform update operation with edited values
-              // For demonstration, just print the edited values
-              print('Edited Product Name: $editedProductName');
-              print('Edited New Price: $editedNewPrice');
-              print('Edited New Quantity: $editedNewQuantity');
-
-              // Close the dialog
-              Navigator.of(context).pop();
-            },
-            child: Text("Confirm"),
-          ),
-        ],
-      );
-    },
-  );
-}
 
