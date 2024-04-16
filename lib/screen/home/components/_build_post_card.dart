@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rewarding_sale_app_flutter_app/services/rewardsservice.dart';
 import '../../../services/commentservice.dart';
 
 class PostCard extends StatefulWidget {
@@ -31,9 +32,10 @@ class _PostCardState extends State<PostCard> {
   // Method to fetch view count asynchronously
   Future<void> fetchViewCount() async {
     try {
-      final viewCount = widget.post.oldQuantity; // Assuming 'v' is the field for view count
+      final viewCount = await RewardsService.getPostViews(widget.post.id);
+
       setState(() {
-        _viewCount = viewCount;
+        _viewCount = viewCount as int;
       });
     } catch (error) {
       print('Error fetching view count: $error');
