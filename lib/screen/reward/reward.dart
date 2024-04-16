@@ -85,8 +85,20 @@ class _RewardPageState extends State<RewardPage> {
   void initState() {
     super.initState();
     fetchCurrentUser();
+    //fetchPoints();
   }
 
+
+  // Future<void> fetchPoints() async {
+  //   try {
+  //     // Fetch user's rewards
+  //     int userPoints = await RewardsService.fetchPoints();
+  //     print(userPoints);
+  //     // Do something with the fetched userPoints, if needed
+  //   } catch (error) {
+  //     print('Error fetching user rewards: $error');
+  //   }
+  // }
   Future<void> fetchCurrentUser() async {
     try {
       CurrentUser currentUser = await CurrentUserService.getCurrentUser();
@@ -107,7 +119,7 @@ class _RewardPageState extends State<RewardPage> {
           await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        String address = '${place.locality}';
+        String address = '${place.street}';
         setState(() {
           location = address;
         });

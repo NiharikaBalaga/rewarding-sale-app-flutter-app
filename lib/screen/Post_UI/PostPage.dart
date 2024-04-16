@@ -28,7 +28,7 @@ class PostPage extends StatelessWidget {
         centerTitle: true,
         elevation: 2,
         iconTheme: const IconThemeData(
-          color: Colors.white,
+          color: Colors.white, // Set the color of the back arrow to white
         ),
       ),
       body: MyWidget(), // Directly embed MyWidget here
@@ -663,7 +663,9 @@ class _MyWidgetState extends State<MyWidget> {
           ),
         ],
       ),
+
     );
+
   }
 
   placesAutoCompleteTextField() {
@@ -674,10 +676,14 @@ class _MyWidgetState extends State<MyWidget> {
             color: Colors.grey, width: 0.5), // Add border color and width
         borderRadius: BorderRadius.circular(7.0), // Add border radius
       ),
+
       padding: const EdgeInsets.symmetric(horizontal: 0),
+
       child: GooglePlaceAutoCompleteTextField(
+
         textEditingController: _locationController,
         googleAPIKey: 'AIzaSyDBvFOnu4xQhn3EprY9llKqnfOkZkVw6ms',
+
         inputDecoration: const InputDecoration(
           hintText: "Search for a store",
           hintStyle: TextStyle(color: Colors.grey), // Update hint text color
@@ -688,6 +694,7 @@ class _MyWidgetState extends State<MyWidget> {
               color: kPrimaryColor, size: 35), // Add location icon
           alignLabelWithHint: true, // Align label with the hint text
         ),
+
         debounceTime: 400,
         countries: const ['ca'],
         getPlaceDetailWithLatLng: (Prediction prediction) {

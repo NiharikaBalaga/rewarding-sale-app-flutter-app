@@ -19,8 +19,23 @@ class ApiConfig {
   //Comment Service
   static const String baseUrlComment = 'http://10.0.2.2:3004/api';
   static const String addCommentEndpoint ='/comment';
+  static const String getCommentEndpoint ='/comment/comments';
+  static const String editCommentEndpoint ='/comment';
+  static const String deleteCommentEndpoint ='/comment';
 
   //Report Service
   static const String baseUrlReport = 'http://10.0.2.2:3007/api';
   static const String getReportEndpoint ='/report';
+
+  //Rewards Service
+  static const String baseUrlRewards = 'http://10.0.2.2:3006/api';
+  static const String getRewardsEndpoint ='/rewards/user/points';
+
+  //Vote Service
+  static const String baseUrlVote = 'http://10.0.2.2:3005/api';
+  static const String patchVoteEndpoint ='/vote';
+
+  //search service
+  static const String baseUrlSearch = 'http://10.0.2.2:3003/api';
+  static const String getSearchEndpoint ='/search';
 }

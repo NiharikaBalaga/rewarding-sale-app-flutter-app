@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/constant.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:rewarding_sale_app_flutter_app/services/rewardsservice.dart';
+import '../../../services/commentservice.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -15,8 +16,42 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   int _likeCount = 10;
-  int _viewCount = 20;
+  int _viewCount = 0; // Initialize view count to 0
+  int _commentCount = 0; // Initialize comment count to 0
   bool _isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch view count when the widget initializes
+    fetchViewCount();
+    // Fetch comment count when the widget initializes
+    fetchCommentCount();
+  }
+
+  // Method to fetch view count asynchronously
+  Future<void> fetchViewCount() async {
+    try {
+      final viewCount = await RewardsService.getPostViews(widget.post.id);
+
+      setState(() {
+        _viewCount = viewCount as int;
+      });
+    } catch (error) {
+      print('Error fetching view count: $error');
+    }
+  }
+
+  Future<void> fetchCommentCount() async {
+    try {
+      final comments = await CommentService.getComments(widget.post.id);
+      setState(() {
+        _commentCount = comments.length;
+      });
+    } catch (error) {
+      print('Error fetching comments: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +111,7 @@ class _PostCardState extends State<PostCard> {
                         onPressed: () {
                           // Add comment functionality here
                         },
-                        count: 5,
+                        count: _commentCount,
                       ),
                       _buildIconButton(
                         icon: FontAwesomeIcons.eye,
@@ -88,15 +123,6 @@ class _PostCardState extends State<PostCard> {
                         },
                         count: _viewCount,
                       ),
-
-                      // _buildIconButton(
-                      //   icon: FontAwesomeIcons.share,
-                      //   color: kPrimaryColor,
-                      //   onPressed: () {
-                      //     // Add share functionality here
-                      //   },
-                      //   count: 15,
-                      // ),
                     ],
                   ),
                 ),

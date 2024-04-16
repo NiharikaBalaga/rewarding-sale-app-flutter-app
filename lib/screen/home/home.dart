@@ -9,6 +9,7 @@ import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/user_profile/user_profile.dart';
 import 'package:rewarding_sale_app_flutter_app/services/getcurrentuserservice.dart';
 import 'package:rewarding_sale_app_flutter_app/services/getpostservice.dart';
+import 'package:rewarding_sale_app_flutter_app/services/searchservice.dart'; // Import the search service
 
 import 'components/_body.dart';
 
@@ -49,10 +50,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         userName = '$lastName';
       });
-      // double lastlatitude = -80.579977;
-      // double lastlongitude = 43.445395;
       await getUserLocation(
-
           currentUser.lastLatitude, currentUser.lastLongitude);
     } catch (error) {
       print('Error fetching current user: $error');
@@ -61,11 +59,10 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getUserLocation(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          latitude, longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        print(place);
         String address = '${place.street}';
         setState(() {
           userLocation = address;
@@ -79,7 +76,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refresh() async {
-    // Fetch updated data
     await fetchCurrentUser();
     await fetchPosts();
   }
@@ -128,7 +124,8 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UserProfileScreen()),
+                      builder: (context) => UserProfileScreen(),
+                    ),
                   );
                 },
                 child: const Icon(
@@ -148,7 +145,25 @@ class _HomePageState extends State<HomePage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: bodyHomePage(posts, context),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                buildSearchProducts(), // Add search bar
+                // Expanded(
+                //   child: bodyHomePage(posts, context), // Display posts
+                // ),
+                Expanded(
+                  child: posts.isEmpty // Check if there are no search results
+                      ? Center(
+                    child: Text(
+                      'No results found',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
+                      : bodyHomePage(posts, context), // Display posts
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -198,5 +213,83 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  // Function to build the search bar
+  Row buildSearchProducts() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Search Bar
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black12,
+                  width: 2.0,
+                ),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.search, color: Colors.grey),
+                  ),
+                  Expanded(
+                    child: _showTextField((value) {
+                      _performSearch(value);
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _showTextField(Function(String) onSubmitted) {
+    return TextField(
+      onSubmitted: (query) {
+        // Call _performSearch if query is not empty
+        if (query.isNotEmpty) {
+          onSubmitted(query);
+        } else {
+          // Call fetchPosts if query is empty
+          fetchPosts();
+        }
+      },
+      decoration: InputDecoration(
+        hintText: 'Search...',
+        border: InputBorder.none,
+        hintStyle: TextStyle(color: Colors.grey),
+      ),
+    );
+  }
+
+
+  void _performSearch(String query) async {
+    try {
+      if (query.isEmpty) {
+        // If query is empty, fetch all posts
+        await fetchPosts();
+      } else {
+        // Call the search service to fetch results
+        final List<Post> searchResults = await SearchService.search(query);
+        // Process the search results here, e.g., update UI with the results
+        setState(() {
+          posts = searchResults;
+        });
+        print('Search Results: $searchResults');
+      }
+    } catch (error) {
+      // Handle errors if any
+      print('Error during search: $error');
+    }
   }
 }

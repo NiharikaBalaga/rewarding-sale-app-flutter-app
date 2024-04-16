@@ -5,22 +5,23 @@ import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageSer
 import '../config/apiconfig.dart';
 
 class PostService {
-  // static const String baseUrl = 'http://localhost:3001/api';
+ // static const String baseUrl = 'http://localhost:3001/api';
   static Future<List<Post>> fetchAllPosts() async {
     try {
-      final String apiUrl =
-          '${ApiConfig.baseUrlPost}${ApiConfig.getPostEndpoint}';
+      final String apiUrl = '${ApiConfig.baseUrlPost}${ApiConfig.getPostEndpoint}';
       final secureStorageService = SecureStorageService();
-      final accessToken =
-          await secureStorageService.read(SecureStorageService.keyAccessToken);
+      final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
 
       if (accessToken == null) {
         throw Exception('Access token not available');
       }
 
-      final response = await http.get(Uri.parse(apiUrl), headers: {
-        'Authorization': 'Bearer $accessToken', // Include authorization header
-      });
+      final response = await http.get(
+          Uri.parse(apiUrl),
+          headers: {
+            'Authorization': 'Bearer $accessToken', // Include authorization header
+          }
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> responseData = json.decode(response.body)['data'];
