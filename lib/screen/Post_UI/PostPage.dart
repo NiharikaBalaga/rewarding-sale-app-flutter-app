@@ -79,6 +79,7 @@ class _MyWidgetState extends State<MyWidget> {
   File? _image1;
   String? _placeId;
   bool _isLoading = false;
+  String _loadingMessage = '';
 
   TextEditingController _locationController = TextEditingController();
   TextEditingController _productNameController = TextEditingController();
@@ -104,6 +105,25 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _startLoadingProcess() {
+    setState(() {
+      _isLoading = true;
+      _loadingMessage = 'Post creation started';
+    });
+    Timer(Duration(seconds: 3), _continueLoadingProcess);
+  }
+
+  void _continueLoadingProcess() {
+    setState(() {
+      _loadingMessage = 'Validating location';
+    });
+    Timer(Duration(seconds: 3), () {
+      setState(() {
+        _loadingMessage = 'Validating Post';
+      });
+    });
   }
 
   // Function to handle place selection
@@ -132,10 +152,11 @@ class _MyWidgetState extends State<MyWidget> {
   }
 
   // // Inside your widget or wherever you want to call the service function
-  void _callCreateNewPostService() async {
-    setState(() {
+  Future<void> _callCreateNewPostService() async {
+    _startLoadingProcess();
+    /* setState(() {
       _isLoading = true; // Start loading
-    });
+    }); */
     try {
       print('placeId: ${_placeId}');
       // Extract values from TextControllers
@@ -268,10 +289,16 @@ class _MyWidgetState extends State<MyWidget> {
   }
 
   void _showSnackBar(String message, Color backgroundColor) {
+    Duration duration =
+        Duration(seconds: 5); // Default duration for non-error messages
+    if (backgroundColor == Colors.red) {
+      duration = Duration(seconds: 10); // Longer duration for error messages
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 5),
+        duration: duration,
         backgroundColor: backgroundColor,
       ),
     );
@@ -281,9 +308,38 @@ class _MyWidgetState extends State<MyWidget> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : buildFormUI(),
+      child: Stack(
+        children: [
+          buildFormUI(), // Your form UI
+          if (_isLoading) loadingOverlay(),
+        ],
+      ),
+    );
+  }
+
+  Widget loadingOverlay() {
+    return Positioned.fill(
+      // This will make sure the overlay covers the entire screen area.
+      child: Container(
+        color: Colors.white.withOpacity(0.8), // Semi-transparent overlay
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment
+              .center, // Ensure alignment is centered horizontally
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 20),
+            Text(
+              _loadingMessage,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18, // Bigger font size
+                fontWeight: FontWeight.bold, // Make text bold
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
