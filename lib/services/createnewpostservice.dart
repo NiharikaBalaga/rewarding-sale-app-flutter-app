@@ -22,7 +22,8 @@ class NewPostService {
       print('$productName, $storePlaceId, $newQuantity');
 
       final secureStorageService = SecureStorageService();
-      final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
+      final accessToken =
+          await secureStorageService.read(SecureStorageService.keyAccessToken);
 
       print('access-token-${accessToken}');
 
@@ -81,9 +82,13 @@ class NewPostService {
         print('response-${response.statusCode}, ${response.body}');
       }
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         print('New post created successfully');
-        return null; // Return null if post creation is successful
+        // Assuming response body contains the ID of the newly created post
+        var responseData = json.decode(response.body);
+        print("responseData: $responseData");
+        return responseData['postId']; // Return the post ID
+        //return null; // Return null if post creation is successful
       } else {
         // Parse postDeclinedReason from response body
         final Map<String, dynamic> responseBody = json.decode(response.body);

@@ -5,7 +5,7 @@ import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageSer
 import '../config/apiconfig.dart';
 
 class PostService {
-
+ // static const String baseUrl = 'http://localhost:3001/api';
   static Future<List<Post>> fetchAllPosts() async {
     try {
       final String apiUrl = '${ApiConfig.baseUrlPost}${ApiConfig.getPostEndpoint}';
@@ -31,6 +31,39 @@ class PostService {
       }
     } catch (error) {
       throw Exception('Failed to load posts: $error');
+    }
+  }
+
+  static Future<Post> fetchPostById(String postId) async {
+    try {
+      final String apiUrl =
+          '${ApiConfig.baseUrlPost}${ApiConfig.getPostId}/$postId';
+      final secureStorageService = SecureStorageService();
+      final accessToken =
+          await secureStorageService.read(SecureStorageService.keyAccessToken);
+      print("fetchPostById postId: $postId");
+      print("fetchPostById apiUrl: $apiUrl");
+      print("fetchPostById accessToken: $accessToken");
+      if (accessToken == null) {
+        throw Exception('Access token not available');
+      }
+
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Authorization': 'Bearer $accessToken', // Include authorization header
+      });
+      print("fetchPostById response: $response");
+
+      if (response.statusCode == 200) {
+        print("fetchPostById 200");
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return Post.fromJson(
+            responseData); // Assuming Post.fromJson can handle this structure
+      } else {
+        print("fetchPostById error no 200");
+        throw Exception('Failed to load post: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to load post: $error');
     }
   }
 }
