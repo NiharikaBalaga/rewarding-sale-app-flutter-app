@@ -4,9 +4,8 @@ import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageSer
 import '../config/apiconfig.dart';
 import '../models/Post.dart';
 
-
 class SearchService {
-  static Future<Iterable<Post> Function(Post Function(dynamic e) toElement)> search(String query) async {
+  static Future<List<Post>> search(String query) async {
     try {
       // Construct the API URL for searching
       final String apiUrl = '${ApiConfig.baseUrlSearch}${ApiConfig.getSearchEndpoint}?q=$query';
@@ -35,16 +34,9 @@ class SearchService {
       // Check the response status code
       if (response.statusCode == 200) {
         // Parse the response body as JSON
-
-        final List<dynamic> responseData = json.decode(response.body)['data'];
-        return responseData.map<Post>;
-
+        final List<dynamic> responseData = json.decode(response.body)['searchResults'];
         // Extract the search results from the response
-
-
-       // final List<dynamic> searchResults = responseData['results'];
-       // print('Search results retrieved successfully');
-       // return searchResults;
+        return responseData.map<Post>((json) => Post.fromJson(json)).toList();
       } else {
         // Throw an exception if the request fails
         throw Exception('Failed to retrieve search results: ${response.statusCode}');

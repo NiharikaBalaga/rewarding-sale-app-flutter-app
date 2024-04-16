@@ -5,7 +5,7 @@ import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageSer
 import '../config/apiconfig.dart';
 
 class PostService {
- // static const String baseUrl = 'http://localhost:3001/api';
+
   static Future<List<Post>> fetchAllPosts() async {
     try {
       final String apiUrl = '${ApiConfig.baseUrlPost}${ApiConfig.getPostEndpoint}';

@@ -10,7 +10,6 @@ import 'package:rewarding_sale_app_flutter_app/screen/Post_UI/PostPage.dart';
 import '../../constant.dart';
 import '../../models/CurrentUser.dart';
 import '../../services/getcurrentuserservice.dart';
-import '../../services/rewardsservice.dart';
 import '../user_profile/user_profile.dart';
 
 class RewardPage extends StatefulWidget {
