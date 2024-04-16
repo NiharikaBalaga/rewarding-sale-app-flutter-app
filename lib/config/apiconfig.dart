@@ -34,4 +34,8 @@ class ApiConfig {
   //Vote Service
   static const String baseUrlVote = 'http://10.0.2.2:3005/api';
   static const String patchVoteEndpoint ='/vote';
+
+  //search service
+  static const String baseUrlSearch = 'http://10.0.2.2:3003/api';
+  static const String getSearchEndpoint ='/search';
 }

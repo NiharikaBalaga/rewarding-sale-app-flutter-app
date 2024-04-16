@@ -42,38 +42,6 @@ class CommentService {
       throw Exception('Failed to create comment: $error');
     }
   }
-  // static Future<dynamic> getComments(String postId) async {
-  //   try {
-  //     final String apiUrl = '${ApiConfig.baseUrlComment}${ApiConfig.getCommentEndpoint}/$postId';
-  //
-  //     final secureStorageService = SecureStorageService();
-  //     final accessToken = await secureStorageService.read(SecureStorageService.keyAccessToken);
-  //
-  //     if (accessToken == null) {
-  //       throw Exception('Access token not available');
-  //     }
-  //
-  //     final Map<String, String> headers = {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer $accessToken',
-  //     };
-  //
-  //     final http.Response response = await http.get(
-  //       Uri.parse(apiUrl),
-  //       headers: headers,
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final dynamic responseBody = json.decode(response.body);
-  //       print('Comments retrieved successfully');
-  //       return responseBody;
-  //     } else {
-  //       throw Exception('Failed to retrieve comments: ${response.statusCode}');
-  //     }
-  //   } catch (error) {
-  //     throw Exception('Failed to retrieve comments: $error');
-  //   }
-  // }
 
 
   static Future<List<dynamic>> getComments(String postId) async {
@@ -125,15 +93,16 @@ class CommentService {
       }
 
       final Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+
       };
 
       final Map<String, dynamic> requestBody = {
-        'Comment': updatedComment,
+        'comment': updatedComment,
       };
 
-      final http.Response response = await http.put(
+      final http.Response response = await http.patch(
         Uri.parse(apiUrl),
         headers: headers,
         body: json.encode(requestBody),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
 import '../../constant.dart';
@@ -12,8 +11,6 @@ import '../Post_UI/PostPage.dart';
 import '../home/home.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:share/share.dart';
-
-
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
@@ -37,6 +34,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   bool _showAllComments = false;
   late CurrentUser currentUser;
   List<String> commentIds = []; // List to hold comment IDs
+  late List<Map<String, dynamic>> commentsList;
 
   @override
   void initState() {
@@ -59,45 +57,27 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   void _fetchComments() {
     final String postId = widget.post.id;
-    CommentService.getComments(postId)
-        .then((List<dynamic> commentsData) {
+    CommentService.getComments(postId).then((List<dynamic> commentsData) {
       setState(() {
         // Extract comment text and IDs from each comment object
-        this.comments = commentsData.map((comment) => comment['comment'] as String).toList();
-        this.commentIds = commentsData.map((comment) => comment['id'] as String).toList();
+        this.comments = commentsData
+            .map((comment) => comment['comment'] as String)
+            .toList();
+        this.commentIds =
+            commentsData.map((comment) => comment['_id'] as String).toList();
+        commentsList = commentsData.map((item) {
+          return {
+            'id': item['_id'], // Assuming '_id' is a key in your response
+            'comment': item[
+                'comment'], // Assuming 'comment' is a value in your response
+          };
+        }).toList();
       });
-    })
-        .catchError((error) {
+    }).catchError((error) {
       print('Failed to fetch comments: $error');
       // Handle error here
     });
   }
-
-  //
-  // void _fetchComments() {
-  //   final String postId = widget.post.id;
-  //   CommentService.getComments(postId)
-  //       .then((dynamic responseBody) {
-  //     if (responseBody != null) {
-  //       setState(() {
-  //         // Extract comments and their IDs from the response
-  //         List<dynamic> commentsData = responseBody['comments'];
-  //         comments = commentsData.map((comment) => comment['comment'] as String).toList();
-  //         commentIds = commentsData.map((comment) => comment['id'] as String).toList();
-  //         print("********************");
-  //         print(commentIds);
-  //         print("********************");
-  //       });
-  //     } else {
-  //       print('Failed to fetch comments: Empty response');
-  //     }
-  //   })
-  //       .catchError((error) {
-  //     print('Failed to fetch comments: $error');
-  //     // Handle error here
-  //   });
-  // }
-
 
   @override
   Widget build(BuildContext context) {
@@ -161,13 +141,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   2, // Change this number to the total number of images
-                      (index) => Container(
+                  (index) => Container(
                     width: 8,
                     height: 8,
                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _currentImageIndex == index ? kPrimaryColor : Colors.grey,
+                      color: _currentImageIndex == index
+                          ? kPrimaryColor
+                          : Colors.grey,
                     ),
                   ),
                 ),
@@ -178,7 +160,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'Product Name:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Text(
                       widget.post.productName,
@@ -188,7 +173,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'Category:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Text(
                       widget.post.postCategory,
@@ -198,7 +186,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'Store Name:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Text(
                       widget.post.storeName,
@@ -208,7 +199,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'Location:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Text(
                       widget.post.storeAddress,
@@ -218,7 +212,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'New Price:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Row(
                       children: [
@@ -232,7 +229,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'Old Price:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Row(
                       children: [
@@ -246,7 +246,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'New Quantity:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Text(
                       '${widget.post.newQuantity}',
@@ -256,15 +259,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ListTile(
                     title: Text(
                       'Old Quantity:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryColor),
                     ),
                     subtitle: Text(
                       '${widget.post.oldQuantity}',
                       style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
-                 // _buildConfirmButton(),
-                  Center( // Wrap the button with Center widget
+                  // _buildConfirmButton(),
+                  Center(
+                    // Wrap the button with Center widget
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -275,58 +282,66 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   SizedBox(height: 20),
                   Text(
                     'Comments',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor),
                   ),
                   SizedBox(height: 10),
                   _buildAddCommentField(), // Render the add comment UI
                   SizedBox(height: 10),
                   _buildComments(),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _showReportDialog(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(Icons.flag, color: Colors.red, size: 36), // Flag icon
-                        Text('Report', style: TextStyle(color: Colors.red)), // Text below the icon
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      try {
-                        await VoteService.voteForPost(widget.post.id);
-                      setState(() {
-                        upvoteCount++; // Increment upvote count
-                        print('upvote count: $upvoteCount');
-                      });
-                      _showFlyingAnimation(context);
-                    } catch (error) {
-                      print('Failed to vote for post: $error');
-                      // Handle error here
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        Icon(Icons.thumb_up, color: Colors.green, size: 36), // Thumb up icon
-                        Text('Upvote', style: TextStyle(color: Colors.green)), // Text below the icon
-                      ],
-                    ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showReportDialog(context);
+                        },
+                        child: Column(
+                          children: [
+                            Icon(Icons.flag,
+                                color: Colors.red, size: 36), // Flag icon
+                            Text('Report',
+                                style: TextStyle(
+                                    color: Colors.red)), // Text below the icon
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          try {
+                            await VoteService.voteForPost(widget.post.id);
+                            setState(() {
+                              upvoteCount++; // Increment upvote count
+                              print('upvote count: $upvoteCount');
+                            });
+                            _showFlyingAnimation(context);
+                          } catch (error) {
+                            print('Failed to vote for post: $error');
+                            // Handle error here
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            Icon(Icons.thumb_up,
+                                color: Colors.green, size: 36), // Thumb up icon
+                            Text('Upvote',
+                                style: TextStyle(
+                                    color:
+                                        Colors.green)), // Text below the icon
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-        ],
         ),
-
       ),
-
-    ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: kPrimaryColor, // Set the background color
         selectedItemColor: Colors.white, // Set the selected item color
@@ -391,22 +406,24 @@ class _PostDetailPageState extends State<PostDetailPage> {
               decoration: InputDecoration(
                 hintText: 'Add a comment...',
                 border: InputBorder.none, // Remove the default border
-                contentPadding: EdgeInsets.all(12), // Adjust the content padding
+                contentPadding:
+                    EdgeInsets.all(12), // Adjust the content padding
               ),
             ),
           ),
         ),
-
         SizedBox(width: 10),
         IconButton(
           onPressed: () async {
             if (_commentController.text.isNotEmpty) {
               try {
-                await CommentService.createComment(widget.post.id, _commentController.text);
-                setState(() {
-                  comments.add(_commentController.text);
-                  _commentController.clear();
-                });
+                await CommentService.createComment(
+                    widget.post.id, _commentController.text);
+                // setState(() {
+                //   comments.add(_commentController.text);
+                _commentController.clear();
+                // });
+                _fetchComments();
               } catch (error) {
                 print('Failed to add comment: $error');
                 // Handle error here
@@ -418,6 +435,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       ],
     );
   }
+
   Widget _buildComments() {
     // Check if there are no comments yet
     if (comments.isEmpty) {
@@ -428,7 +446,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               'Other Comments',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: kPrimaryColor),
             ),
           ),
           Padding(
@@ -443,158 +464,162 @@ class _PostDetailPageState extends State<PostDetailPage> {
     }
 
     // Reverse the order of comments to display the latest ones first
-    List<String> reversedComments = List.from(comments.reversed);
+    List<Map<String, dynamic>> reversedComments =
+        commentsList.reversed.toList();
     int remainingComments = reversedComments.length - 1;
-    List<String> displayedComments = reversedComments.sublist(0, _showAllComments ? reversedComments.length : 1);
+    List<Map<String, dynamic>> displayedComments = reversedComments.sublist(
+        0, _showAllComments ? reversedComments.length : 1);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'Other Comments',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kPrimaryColor),
-          ),
-        ),
-        SizedBox(height: 10),
-        Container(
-          padding: EdgeInsets.symmetric(vertical:5, horizontal: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.grey[200],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: displayedComments.asMap().entries.map((entry) {
-              int commentIndex = entry.key;
-              String comment = entry.value;
-              // Check if the comment belongs to the current user
-              bool isCurrentUserComment = currentUser != null && currentUser.id == widget.post.userId;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 1.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _isEditing && commentIndex == _editIndex
-                              ? TextField(
-                            controller: _editController,
-                            onSubmitted: (editedComment) {
-                              setState(() {
-                                comments[commentIndex] = editedComment; // Update the comment in the list
-                                _isEditing = false; // Set editing flag to false
-                              });
-                            },
-                          )
-                              : Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(comment),
-                          ),
-                        ),
-                        if (isCurrentUserComment)
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (!_isEditing) {
-                                      _editIndex = commentIndex;
-                                      _editController.text = comments[commentIndex];
-
-                                      _isEditing = true;
-                                    } else {
-                                      comments[_editIndex] = _editController.text;
-                                      print("outside" +_editController.text);
-
-    CommentService.editComment(comment, _editController.text).then((response) {
-                    // Handle the response if needed
-                    print('Comment edited successfully');
-                  }).catchError((error) {
-                    // Handle the error if needed
-                    print('Error editing comment: $error');
-                  });
-
-                                      _isEditing = false;
-                                    }
-                                  });
-                                },
-                                icon: _isEditing && commentIndex == _editIndex
-                                    ? Icon(Icons.check,color: Colors.green,)
-                                    : Icon(Icons.edit, color:kPrimaryColor),
-                              ),
-
-
-
-                              // IconButton(
-                              //   onPressed: () {
-                              //     setState(() {
-                              //       comments.removeAt(commentIndex);
-                              //     });
-                              //   },
-                              //   icon: Icon(Icons.delete, color: Colors.red),
-                              // ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    // Get the comment ID corresponding to the comment to be deleted
-                                    String commentId = commentIds[commentIndex];
-
-                                    // Call the deleteComment service with the comment ID
-                                    CommentService.deleteComment(commentId)
-                                        .then((response) {
-                                      // Handle the response if needed
-                                      print('Comment deleted successfully');
-                                      // Remove the comment from the list
-                                      comments.removeAt(commentIndex);
-                                      commentIds.removeAt(commentIndex);
-                                    })
-                                        .catchError((error) {
-                                      // Handle the error if needed
-                                      print('Error deleting comment: $error');
-                                    });
-                                  });
-                                },
-                                icon: Icon(Icons.delete, color: Colors.red),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                    Divider(), // Add a divider between comments
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        if (remainingComments > 0)
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _showAllComments = !_showAllComments;
-              });
-            },
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              _showAllComments ? 'Hide Comments' : 'View $remainingComments more comments',
+              'Other Comments',
               style: TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: kPrimaryColor),
             ),
           ),
-      ],
+          SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: displayedComments.asMap().entries.map((entry) {
+                int commentIndex = entry.key;
+                String commentId = entry.value.values.toList()[0];
+                String commentText = entry.value.values.toList()[1];
+                bool isCurrentUserComment =
+                    currentUser != null && currentUser.id == widget.post.userId;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _isEditing && commentIndex == _editIndex
+                                ? TextField(
+                                    controller: _editController,
+                                    onSubmitted: (editedComment) {
+                                      setState(() {
+                                        //comments[commentIndex] = editedComment;
+                                        _isEditing = false;
+                                      });
+                                    },
+                                  )
+                                : Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(commentText),
+                                  ),
+                          ),
+                          if (isCurrentUserComment)
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (!_isEditing) {
+                                        _editIndex = commentIndex;
+                                        _editController.text = commentText;
+                                        _isEditing = true;
+                                      } else {
+                                        comments[_editIndex] =
+                                            _editController.text;
+
+                                        // Call editComment service
+                                        CommentService.editComment(
+                                                commentId, _editController.text)
+                                            .then((response) {
+                                          // Handle the response if needed
+                                          print('Comment edited successfully');
+                                          _fetchComments();
+                                        }).catchError((error) {
+                                          // Handle errors
+                                          print(
+                                              'Error editing comment: $error');
+
+                                          _fetchComments();
+                                        });
+
+                                        _isEditing = false;
+                                      }
+                                    });
+                                  },
+                                  icon: _isEditing
+                                      ? Icon(Icons.check, color: Colors.green)
+                                      : Icon(Icons.edit, color: kPrimaryColor),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      // Optimistically remove the comment from the UI
+                                      comments.removeAt(commentIndex);
+                                      commentIds.removeAt(commentIndex);
+
+                                      // Call the deleteComment service with the comment ID
+                                      CommentService.deleteComment(commentId)
+                                          .then((response) {
+                                        // Handle the response if needed
+                                        print('Comment deleted successfully');
+                                        _fetchComments();
+                                      }).catchError((error) {
+                                        // Revert the changes if an error occurs
+                                        // setState(() {
+                                        //   comments.insert(commentIndex, commentText); // Reinsert the comment
+                                        //   commentIds.insert(commentIndex, commentId); // Reinsert the comment ID
+                                        // });
+                                        print('Error deleting comment: $error');
+                                      });
+                                    });
+                                  },
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                      Divider(), // Add a divider between comments
+                    ],
+                  ),
+                );
+                // }
+              }).toList(),
+            ),
+          ),
+          if (remainingComments > 0)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showAllComments = !_showAllComments;
+                });
+              },
+              child: Text(
+                _showAllComments
+                    ? 'Hide Comments'
+                    : 'View $remainingComments more comments',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
   void _showReportDialog(BuildContext context) {
     String selectedOption = ''; // Variable to store the selected option
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -602,13 +627,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
           builder: (BuildContext context, setState) {
             return AlertDialog(
               backgroundColor: Colors.white,
-              title: Text("Select Reason",style: TextStyle(fontSize: 20, color: kPrimaryColor)),
+              title: Text("Select Reason",
+                  style: TextStyle(fontSize: 20, color: kPrimaryColor)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
                     title: Text("OUT_OF_STOCK"),
-                    tileColor: selectedOption == 'OUT_OF_STOCK' ? Colors.grey.withOpacity(0.3) : null,
+                    tileColor: selectedOption == 'OUT_OF_STOCK'
+                        ? Colors.grey.withOpacity(0.3)
+                        : null,
                     onTap: () {
                       setState(() {
                         selectedOption = 'OUT_OF_STOCK'; // Set selected option
@@ -617,7 +645,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                   ListTile(
                     title: Text("MISLEADING"),
-                    tileColor: selectedOption == 'MISLEADING' ? Colors.grey.withOpacity(0.3) : null,
+                    tileColor: selectedOption == 'MISLEADING'
+                        ? Colors.grey.withOpacity(0.3)
+                        : null,
                     onTap: () {
                       setState(() {
                         selectedOption = 'MISLEADING'; // Set selected option
@@ -626,7 +656,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                   ListTile(
                     title: Text("NOT_FOUND"),
-                    tileColor: selectedOption == 'NOT_FOUND' ? Colors.grey.withOpacity(0.3) : null,
+                    tileColor: selectedOption == 'NOT_FOUND'
+                        ? Colors.grey.withOpacity(0.3)
+                        : null,
                     onTap: () {
                       setState(() {
                         selectedOption = 'NOT_FOUND'; // Set selected option
@@ -646,15 +678,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   onPressed: selectedOption.isEmpty
                       ? null
                       : () {
-                    // Print selected option and handle confirmation
-                    print('Selected option: $selectedOption');
-                    Navigator.of(context).pop(); // Close dialog
-                    // Pass the selected report type to the report service
-                    ReportService.fetchReport(widget.post.id, selectedOption);
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    ); // Redirect to home page
-                  },
+                          // Print selected option and handle confirmation
+                          print('Selected option: $selectedOption');
+                          Navigator.of(context).pop(); // Close dialog
+                          // Pass the selected report type to the report service
+                          ReportService.fetchReport(
+                              widget.post.id, selectedOption);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          ); // Redirect to home page
+                        },
                   child: Text('Confirm'),
                 ),
               ],
@@ -664,6 +697,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       },
     );
   }
+
   // Function to handle the button press
   void _handleConfirmButtonPress() {
     setState(() {
@@ -690,39 +724,37 @@ class _PostDetailPageState extends State<PostDetailPage> {
       ),
       child: Text(
         'Confirm',
-        style: TextStyle(fontSize: 16, fontFamily: 'Roboto', color: Colors.white),
+        style:
+            TextStyle(fontSize: 16, fontFamily: 'Roboto', color: Colors.white),
       ),
     );
   }
 }
-  void _showFlyingAnimation(BuildContext context) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final position = renderBox.localToGlobal(Offset.zero);
 
-    OverlayEntry entry = OverlayEntry(
-      builder: (context) => Positioned(
-        right: position.dx,
-        top: position.dy,
-        child: TweenAnimationBuilder(
-          duration: Duration(milliseconds: 500),
-          tween: Tween(begin: -500.0, end: 0.0),
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(-100, -value),
-              child: Icon(Icons.thumb_up, color: Colors.blue, size: 42),
-            );
-          },
-        ),
+void _showFlyingAnimation(BuildContext context) {
+  final RenderBox renderBox = context.findRenderObject() as RenderBox;
+  final position = renderBox.localToGlobal(Offset.zero);
+
+  OverlayEntry entry = OverlayEntry(
+    builder: (context) => Positioned(
+      right: position.dx,
+      top: position.dy,
+      child: TweenAnimationBuilder(
+        duration: Duration(milliseconds: 500),
+        tween: Tween(begin: -500.0, end: 0.0),
+        builder: (context, value, child) {
+          return Transform.translate(
+            offset: Offset(-100, -value),
+            child: Icon(Icons.thumb_up, color: Colors.blue, size: 42),
+          );
+        },
       ),
-    );
+    ),
+  );
 
-    Overlay.of(context)?.insert(entry);
+  Overlay.of(context)?.insert(entry);
 
-    Future.delayed(Duration(milliseconds: 500), () {
-      entry.remove();
-    });
-  }
-
-
-
-
+  Future.delayed(Duration(milliseconds: 300), () {
+    entry.remove();
+  });
+}
