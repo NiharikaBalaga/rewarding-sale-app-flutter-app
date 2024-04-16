@@ -219,7 +219,7 @@ class _MyWidgetState extends State<MyWidget> {
     // Ensure postId is not null and valid
     print("_checkPostStatus: $postId");
     if (postId == null || postId.isEmpty) {
-      _showSnackBar('Invalid post ID');
+      _showSnackBar('Invalid post ID', Colors.red);
       return;
     }
 
@@ -243,12 +243,13 @@ class _MyWidgetState extends State<MyWidget> {
           });
 
           if (post.status == 'POST_PUBLISHED') {
-            _showSnackBar('Post published successfully');
+            _showSnackBar('Post published successfully', Colors.green);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           } else if (post.status == 'POST_FAILED') {
-            _showSnackBar('Failed to publish post: ${post.postDeclinedReason}');
+            _showSnackBar('Failed to publish post: ${post.postDeclinedReason}',
+                Colors.red);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
@@ -257,7 +258,7 @@ class _MyWidgetState extends State<MyWidget> {
       } catch (error) {
         // Handle exceptions by logging and showing snackbar message
         print('Error fetching post status: $error');
-        _showSnackBar('Error fetching post status: $error');
+        _showSnackBar('Error fetching post status: $error', Colors.red);
         timer.cancel();
         setState(() {
           _isLoading = false;
@@ -266,12 +267,12 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
-  void _showSnackBar(String message) {
+  void _showSnackBar(String message, Color backgroundColor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: Duration(seconds: 5),
-        backgroundColor: Colors.red,
+        backgroundColor: backgroundColor,
       ),
     );
   }
