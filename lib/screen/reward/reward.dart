@@ -22,34 +22,34 @@ class RewardPage extends StatefulWidget {
 class _RewardPageState extends State<RewardPage> {
   final List<RewardDetail> rewardDetails = [
     RewardDetail(
-        starsAmount: 25,
+        starsAmount: 250,
         starsDescription:
             'Early access to exclusive sales - Gain entry to top sales before they go public'),
     RewardDetail(
-        starsAmount: 50,
+        starsAmount: 500,
         starsDescription:
             'Featured Post - Get your sale post featured for enhanced visibility for a day'),
     RewardDetail(
-        starsAmount: 75,
+        starsAmount: 750,
         starsDescription:
             'Discount Coupons - Redeem stars for discount coupons at partner retailers'),
     RewardDetail(
-      starsAmount: 100,
+      starsAmount: 1000,
       starsDescription:
           'Gift Cards - Earn one for popular stores, allowing you to save on purchases',
     ),
     RewardDetail(
-      starsAmount: 150,
+      starsAmount: 1500,
       starsDescription:
           'VIP Sale Events - Access to events where products are available at a steep discount',
     ),
     RewardDetail(
-      starsAmount: 200,
+      starsAmount: 2000,
       starsDescription:
           'Personal Shopping Assistant - Gets an assistant for top deals and rare finds for a day',
     ),
     RewardDetail(
-      starsAmount: 250,
+      starsAmount: 2500,
       starsDescription:
           'Exclusive Merchandise - Special merchandise not available to the public',
     ),

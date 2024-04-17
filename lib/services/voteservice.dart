@@ -27,6 +27,8 @@ class VoteService {
         },
       );
 
+      print('vote-${response.statusCode}');
+      print('vote-${response.body}');
       if (response.statusCode == 200) {
         // Vote successful
         print('Voted for post with ID: $postId');
