@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/services/storage/secureStorageService.dart';
@@ -41,9 +42,6 @@ class PostService {
       final secureStorageService = SecureStorageService();
       final accessToken =
           await secureStorageService.read(SecureStorageService.keyAccessToken);
-      print("fetchPostById postId: $postId");
-      print("fetchPostById apiUrl: $apiUrl");
-      print("fetchPostById accessToken: $accessToken");
       if (accessToken == null) {
         throw Exception('Access token not available');
       }
@@ -51,15 +49,16 @@ class PostService {
       final response = await http.get(Uri.parse(apiUrl), headers: {
         'Authorization': 'Bearer $accessToken', // Include authorization header
       });
-      print("fetchPostById response: $response");
+
 
       if (response.statusCode == 200) {
-        print("fetchPostById 200");
         final Map<String, dynamic> responseData = json.decode(response.body);
         return Post.fromJson(
             responseData); // Assuming Post.fromJson can handle this structure
       } else {
-        print("fetchPostById error no 200");
+        if (kDebugMode) {
+          print("fetchPostById error no 200");
+        }
         throw Exception('Failed to load post: ${response.statusCode}');
       }
     } catch (error) {

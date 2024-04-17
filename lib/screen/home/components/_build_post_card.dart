@@ -117,9 +117,6 @@ class _PostCardState extends State<PostCard> {
                         icon: FontAwesomeIcons.eye,
                         color: kPrimaryColor,
                         onPressed: () {
-                          setState(() {
-                            _viewCount++;
-                          });
                         },
                         count: _viewCount,
                       ),

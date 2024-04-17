@@ -15,6 +15,7 @@ class ApiConfig {
   static const String getPostEndpoint = '/post/allpost';
   static const String logoutUser = '/auth/user/logout';
   static const String deletePostEndpoint ='/post';
+  static const String getPostId = '/post';
 
   //Comment Service
   static const String baseUrlComment = 'http://10.0.2.2:3004/api';

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rewarding_sale_app_flutter_app/models/Post.dart';
 import 'package:rewarding_sale_app_flutter_app/screen/reward/reward.dart';
+import 'package:rewarding_sale_app_flutter_app/services/getpostservice.dart';
+import 'package:rewarding_sale_app_flutter_app/services/postapiservices.dart';
 import '../../constant.dart';
 import '../../models/CurrentUser.dart';
 import '../../services/commentservice.dart';
@@ -41,9 +43,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
     super.initState();
     _fetchComments();
     _fetchCurrentUser();
+    _callPostViewed();
     comments = List<String>.from(widget.post.comments ?? []);
     _editController = TextEditingController();
     _commentController = TextEditingController();
+  }
+
+  void _callPostViewed() async {
+    try {
+      // post service will send event to keep track for the post views
+      await PostService.fetchPostById(widget.post.id);
+    } catch(error) {
+      print('callPostViewed-error-$error');
+    }
   }
 
   Future<void> _fetchCurrentUser() async {
@@ -86,14 +98,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
         backgroundColor: kPrimaryColor,
         title: Text(
           widget.post.productName.split(' ').take(2).join(' '),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18, // Set the desired font size for the product name
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.share),
+            icon: const Icon(Icons.share),
             onPressed: () {
               final RenderBox box = context.findRenderObject() as RenderBox;
               Share.share(
@@ -144,7 +156,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   (index) => Container(
                     width: 8,
                     height: 8,
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentImageIndex == index
@@ -158,7 +170,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'Product Name:',
                       style: TextStyle(
                           fontSize: 18,
@@ -167,11 +179,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(
                       widget.post.productName,
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                      style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'Category:',
                       style: TextStyle(
                           fontSize: 18,
@@ -180,11 +192,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(
                       widget.post.postCategory,
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                      style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'Store Name:',
                       style: TextStyle(
                           fontSize: 18,
@@ -193,11 +205,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(
                       widget.post.storeName,
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                      style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'Location:',
                       style: TextStyle(
                           fontSize: 18,
@@ -206,11 +218,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(
                       widget.post.storeAddress,
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                      style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'New Price:',
                       style: TextStyle(
                           fontSize: 18,
@@ -221,13 +233,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       children: [
                         Text(
                           '${widget.post.newPrice}',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                          style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                         ),
                       ],
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'Old Price:',
                       style: TextStyle(
                           fontSize: 18,
@@ -238,13 +250,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       children: [
                         Text(
                           '${widget.post.oldPrice}',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                          style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                         ),
                       ],
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'New Quantity:',
                       style: TextStyle(
                           fontSize: 18,
@@ -253,11 +265,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(
                       '${widget.post.newQuantity}',
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                      style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
                   ListTile(
-                    title: Text(
+                    title: const Text(
                       'Old Quantity:',
                       style: TextStyle(
                           fontSize: 18,
@@ -266,7 +278,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(
                       '${widget.post.oldQuantity}',
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                      style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                     ),
                   ),
                   // _buildConfirmButton(),
@@ -279,19 +291,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     'Comments',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: kPrimaryColor),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildAddCommentField(), // Render the add comment UI
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildComments(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -299,7 +311,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         onTap: () {
                           _showReportDialog(context);
                         },
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.flag,
                                 color: Colors.red, size: 36), // Flag icon
@@ -323,7 +335,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             // Handle error here
                           }
                         },
-                        child: Column(
+                        child: const Column(
                           children: [
                             Icon(Icons.thumb_up,
                                 color: Colors.green, size: 36), // Thumb up icon
@@ -371,13 +383,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
             // Navigate to PostPage when "Post" icon is tapped
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PostPage()),
+              MaterialPageRoute(builder: (context) => const PostPage()),
             );
           }
           if (index == 0) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }
           if (index == 2) {
@@ -403,7 +415,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             ),
             child: TextField(
               controller: _commentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Add a comment...',
                 border: InputBorder.none, // Remove the default border
                 // contentPadding:
@@ -412,7 +424,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             ),
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         IconButton(
           onPressed: () async {
             if (_commentController.text.isNotEmpty) {
@@ -430,7 +442,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               }
             }
           },
-          icon: Icon(Icons.send, color: kPrimaryColor),
+          icon: const Icon(Icons.send, color: kPrimaryColor),
         ),
       ],
     );
@@ -439,13 +451,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget _buildComments() {
     // Check if there are no comments yet
     if (comments.isEmpty) {
-      return Column(
+      return const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              'Other Comments',
+              'Comments',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -453,7 +465,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               'No comments yet',
               style: TextStyle(fontSize: 16, color: Colors.grey),
@@ -474,17 +486,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              'Other Comments',
+              'Comments',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: kPrimaryColor),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -514,7 +526,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     },
                                   )
                                 : Container(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       color: Colors.grey[200],
                                       borderRadius: BorderRadius.circular(8),
@@ -556,8 +568,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     });
                                   },
                                   icon: _isEditing
-                                      ? Icon(Icons.check, color: Colors.green)
-                                      : Icon(Icons.edit, color: kPrimaryColor),
+                                      ? const Icon(Icons.check, color: Colors.green)
+                                      : const Icon(Icons.edit, color: kPrimaryColor),
                                 ),
                                 IconButton(
                                   onPressed: () {
@@ -582,13 +594,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                       });
                                     });
                                   },
-                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  icon: const Icon(Icons.delete, color: Colors.red),
                                 ),
                               ],
                             ),
                         ],
                       ),
-                      Divider(), // Add a divider between comments
+                      const Divider(), // Add a divider between comments
                     ],
                   ),
                 );
@@ -607,7 +619,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 _showAllComments
                     ? 'Hide Comments'
                     : 'View $remainingComments more comments',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
                 ),
@@ -627,13 +639,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
           builder: (BuildContext context, setState) {
             return AlertDialog(
               backgroundColor: Colors.white,
-              title: Text("Select Reason",
+              title: const Text("Select Reason",
                   style: TextStyle(fontSize: 20, color: kPrimaryColor)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    title: Text("OUT_OF_STOCK"),
+                    title: const Text("OUT_OF_STOCK"),
                     tileColor: selectedOption == 'OUT_OF_STOCK'
                         ? Colors.grey.withOpacity(0.3)
                         : null,
@@ -644,7 +656,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     },
                   ),
                   ListTile(
-                    title: Text("MISLEADING"),
+                    title: const Text("MISLEADING"),
                     tileColor: selectedOption == 'MISLEADING'
                         ? Colors.grey.withOpacity(0.3)
                         : null,
@@ -655,7 +667,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     },
                   ),
                   ListTile(
-                    title: Text("NOT_FOUND"),
+                    title: const Text("NOT_FOUND"),
                     tileColor: selectedOption == 'NOT_FOUND'
                         ? Colors.grey.withOpacity(0.3)
                         : null,
@@ -672,7 +684,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   onPressed: () {
                     Navigator.of(context).pop(); // Close dialog
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: selectedOption.isEmpty
@@ -685,10 +697,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           ReportService.fetchReport(
                               widget.post.id, selectedOption);
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(builder: (context) => const HomePage()),
                           ); // Redirect to home page
                         },
-                  child: Text('Confirm'),
+                  child: const Text('Confirm'),
                 ),
               ],
             );
@@ -717,12 +729,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
       onPressed: _handleConfirmButtonPress,
       style: TextButton.styleFrom(
         backgroundColor: _isButtonConfirmed ? Colors.green : Colors.grey,
-        padding: EdgeInsets.symmetric(horizontal: 56, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      child: Text(
+      child: const Text(
         'Confirm',
         style:
             TextStyle(fontSize: 16, fontFamily: 'Roboto', color: Colors.white),
@@ -740,12 +752,12 @@ void _showFlyingAnimation(BuildContext context) {
       right: position.dx,
       top: position.dy,
       child: TweenAnimationBuilder(
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         tween: Tween(begin: -500.0, end: 0.0),
         builder: (context, value, child) {
           return Transform.translate(
             offset: Offset(-100, -value),
-            child: Icon(Icons.thumb_up, color: Colors.blue, size: 42),
+            child: const Icon(Icons.thumb_up, color: Colors.blue, size: 42),
           );
         },
       ),
@@ -754,7 +766,7 @@ void _showFlyingAnimation(BuildContext context) {
 
   Overlay.of(context)?.insert(entry);
 
-  Future.delayed(Duration(milliseconds: 300), () {
+  Future.delayed(const Duration(milliseconds: 300), () {
     entry.remove();
   });
 }
